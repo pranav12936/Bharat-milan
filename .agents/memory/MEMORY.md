@@ -1,0 +1,1 @@
+- [Clerk and object storage](clerk-and-storage.md) — preview auth is host-aware; photo uploads require both storage transfer and API metadata persistence.

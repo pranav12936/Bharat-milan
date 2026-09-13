@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /discover
+Disallow: /edit-profile
+Disallow: /manage-photos
+Disallow: /privacy-settings
+Disallow: /interests
+Disallow: /admin

@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Pahadi Bwari"
+description = "A secure, family-oriented matrimonial platform for adults in the Pahadi and Uttarakhand community, with profile discovery, privacy controls, interests, reporting, and admin review."
+version = "1.0.0"
+id = "artifacts/pahadi-bwari"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21326
+
+[services.development]
+run = "pnpm --filter @workspace/pahadi-bwari run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pahadi-bwari", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/pahadi-bwari/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21326"
+BASE_PATH = "/"

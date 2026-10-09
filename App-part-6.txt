@@ -1,0 +1,421 @@
+        <Skeleton className="h-64" />
+      </div>
+    );
+  }
+
+  if (interests.isError || !interests.data) {
+    return (
+      <QueryError
+        message={errorText(interests.error)}
+        retry={() => interests.refetch()}
+      />
+    );
+  }
+
+  // New accounts may not have these arrays yet.
+  const received = interests.data.received ?? [];
+  const sent = interests.data.sent ?? [];
+
+  const respond = (
+    id: string,
+    status: 'accepted' | 'declined',
+  ) => {
+    update.mutate(
+      {
+        id,
+        data: {
+          status:
+            status === 'accepted'
+              ? InterestUpdateStatus.accepted
+              : InterestUpdateStatus.declined,
+        },
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: getListInterestsQueryKey(),
+          });
+
+          setToast(
+            status === 'accepted'
+              ? 'Interest accepted.'
+              : 'Interest declined.',
+          );
+        },
+
+        onError: (error) => {
+          setToast(errorText(error));
+        },
+      },
+    );
+  };
+
+  const row = (
+    item: (typeof sent)[number],
+    incoming: boolean,
+  ) => (
+    <div
+      className="flex flex-col gap-4 border-b border-border py-5 last:border-0 sm:flex-row sm:items-center sm:justify-between"
+      key={item.id}
+      data-testid={`row-interest-${item.id}`}
+    >
+      <div>
+        <div className="flex items-center gap-2">
+          <span className="grid size-8 place-items-center rounded-full bg-accent/15 text-xs font-bold text-accent">
+            {initials(
+              incoming
+                ? item.senderName
+                : item.receiverName,
+            )}
+          </span>
+
+          <p className="font-semibold">
+            {incoming
+              ? item.senderName
+              : item.receiverName}
+          </p>
+        </div>
+
+        <p className="mt-2 text-xs text-muted-foreground">
+          {incoming
+            ? 'Sent you an interest'
+            : 'You sent an interest'}{' '}
+          · {new Date(item.createdAt).toLocaleDateString()}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-3">
+        {item.status === 'pending' && incoming ? (
+          <>
+            <Button
+              variant="quiet"
+              onClick={() =>
+                respond(item.id, 'declined')
+              }
+              data-testid={`button-decline-interest-${item.id}`}
+            >
+              Decline
+            </Button>
+
+            <Button
+              onClick={() =>
+                respond(item.id, 'accepted')
+              }
+              data-testid={`button-accept-interest-${item.id}`}
+            >
+              Accept
+            </Button>
+          </>
+        ) : (
+          <span
+            className={`rounded-lg px-2.5 py-1.5 font-mono-ui text-[10px] uppercase tracking-wider ${item.status === 'accepted'
+                ? 'bg-primary/10 text-primary'
+                : item.status === 'declined'
+                  ? 'bg-destructive/10 text-destructive'
+                  : 'bg-secondary text-muted-foreground'
+              }`}
+          >
+            {item.status}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <PageHeading
+        eyebrow="Interests"
+        title="A little clarity."
+        body="Interests are private signals, not public metrics. Respond when you have the space to do so."
+      />
+
+      {toast && (
+        <p
+          className="mt-5 rounded-xl bg-primary/10 p-3 text-sm text-primary"
+          role="status"
+          data-testid="status-interest"
+        >
+          {toast}
+        </p>
+      )}
+
+      <div className="mt-7 grid gap-6 lg:grid-cols-2">
+        <section className="rounded-2xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-3xl text-primary">
+              Received
+            </h2>
+
+            <span className="rounded-full bg-accent/10 px-2 py-1 font-mono-ui text-[10px] text-accent">
+              {received.length}
+            </span>
+          </div>
+
+          {received.length > 0 ? (
+            <div className="mt-3">
+              {received.map((item) =>
+                row(item, true),
+              )}
+            </div>
+          ) : (
+            <div className="mt-5">
+              <EmptyState
+                icon={<Heart size={20} />}
+                title="Nothing incoming"
+                body="When someone sends you a considered interest, it will appear here."
+              />
+            </div>
+          )}
+        </section>
+
+        <section className="rounded-2xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-3xl text-primary">
+              Sent
+            </h2>
+
+            <span className="rounded-full bg-primary/10 px-2 py-1 font-mono-ui text-[10px] text-primary">
+              {sent.length}
+            </span>
+          </div>
+
+          {sent.length > 0 ? (
+            <div className="mt-3">
+              {sent.map((item) =>
+                row(item, false),
+              )}
+            </div>
+          ) : (
+            <div className="mt-5">
+              <EmptyState
+                icon={<Compass size={20} />}
+                title="Start with a look around"
+                body="Find a profile that feels relevant, then send one thoughtful interest."
+                action={
+                  <Link
+                    href="/discover"
+                    className="text-sm font-bold text-accent"
+                    data-testid="link-interests-discover"
+                  >
+                    Discover profiles
+                  </Link>
+                }
+              />
+            </div>
+          )}
+        </section>
+      </div>
+    </>
+  );
+}
+function Admin() { const stats = useGetAdminStats({ query: { queryKey: getGetAdminStatsQueryKey() } }); const reports = useListAdminReports({ page: 1, pageSize: 12 }, { query: { queryKey: getListAdminReportsQueryKey({ page: 1, pageSize: 12 }) } }); return <><PageHeading eyebrow="Moderation" title="Keep the space worthy." body="A quiet overview for reviewing the health and safety of the community." /><div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[['Users', stats.data?.totalUsers], ['Public profiles', stats.data?.publicProfiles], ['Pending reports', stats.data?.pendingReports], ['Interests sent', stats.data?.interestsSent]].map(([label, value]) => <div className="rounded-2xl border border-border bg-card p-5" key={label as string}><p className="eyebrow text-muted-foreground">{label as string}</p><p className="mt-3 font-display text-5xl text-primary">{stats.isLoading ? '—' : value as number}</p></div>)}</div><section className="mt-8 rounded-2xl border border-border bg-card p-5"><div className="flex items-center justify-between"><div><p className="eyebrow text-accent">Queue</p><h2 className="mt-2 font-display text-3xl text-primary">Reports to review</h2></div><FileText className="text-muted-foreground" /></div>{reports.isLoading ? <div className="mt-5 space-y-3"><Skeleton className="h-14" /><Skeleton className="h-14" /></div> : reports.isError ? <p className="mt-5 rounded-xl bg-destructive/5 p-4 text-sm text-destructive">{errorText(reports.error)}</p> : reports.data?.items.length ? <div className="mt-5 divide-y divide-border">{reports.data.items.map((report) => <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between" key={report.id} data-testid={`row-report-${report.id}`}><div><p className="font-semibold">{report.reason.replaceAll('_', ' ')}</p><p className="mt-1 text-xs text-muted-foreground">Profile {report.reportedProfileId} · {new Date(report.createdAt).toLocaleDateString()}</p></div><span className="rounded-lg bg-accent/10 px-2.5 py-1.5 font-mono-ui text-[10px] uppercase tracking-wider text-accent">{report.status}</span></div>)}</div> : <EmptyState icon={<Check size={20} />} title="The queue is clear" body="No reports are waiting for review." />}</section></>; }
+
+function NotFound() { return <PublicLayout><main className="grid min-h-[65vh] place-items-center px-5 py-20 text-center"><div><p className="eyebrow text-accent">404 · Trail not found</p><h1 className="mt-4 font-display text-7xl text-primary">This path ends<br /><em>in the clouds.</em></h1><p className="mx-auto mt-5 max-w-md text-muted-foreground">The page you were looking for has moved or never existed.</p><Link href="/" className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground" data-testid="link-not-found-home">Return home <ArrowRight size={16} /></Link></div></main></PublicLayout>; }
+
+function HomeRedirect() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const [location, setLocation] = useLocation();
+  const [checkingProfile, setCheckingProfile] = useState(false);
+
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+
+    let cancelled = false;
+
+    async function checkProfileSetup() {
+      setCheckingProfile(true);
+
+      try {
+        const response = await fetch("/api/profile/setup", {
+          credentials: "include",
+        });
+
+        if (cancelled) return;
+
+        if (!response.ok) {
+          setLocation("/profile-setup");
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.completed === true) {
+          setLocation("/dashboard");
+        } else {
+          setLocation("/profile-setup");
+        }
+      } catch {
+        if (!cancelled) {
+          setLocation("/profile-setup");
+        }
+      } finally {
+        if (!cancelled) {
+          setCheckingProfile(false);
+        }
+      }
+    }
+
+    checkProfileSetup();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoaded, isSignedIn, setLocation]);
+
+  if (!isLoaded) {
+    return <div className="min-h-[100dvh] bg-background" />;
+  }
+
+  if (!isSignedIn) {
+    return <Home />;
+  }
+
+  if (checkingProfile) {
+    return (
+      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg font-semibold">Loading your profile...</div>
+          <div className="text-sm text-muted-foreground mt-1">
+            Please wait
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return <div className="min-h-[100dvh] bg-background" />;
+}
+
+function Router() {
+  return (
+    <ErrorBoundary>
+      <Switch>
+        <Route path="/sign-in/*?" component={() => <SignInPage />} />
+        <Route path="/sign-up/*?" component={() => <SignInPage signUp />} />
+
+        <Route path="/" component={HomeRedirect} />
+        <Route path="/about" component={About} />
+        <Route path="/how-it-works" component={HowItWorks} />
+        <Route path="/safety" component={Safety} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/privacy-policy" component={() => <Legal type="privacy" />} />
+        <Route path="/terms" component={() => <Legal type="terms" />} />
+
+        <Route
+          path="/profile-setup"
+          component={() => (
+            <OnboardingGate>
+              <ProfileSetup />
+            </OnboardingGate>
+          )}
+        />
+
+        <Route path="/dashboard" component={() => <Gate><DashboardSafe /></Gate>} />
+        <Route path="/discover" component={() => <Gate><Discover /></Gate>} />
+        <Route path="/profiles/:id" component={ProfilePage} />
+        <Route path="/my-profile" component={() => <Gate><MyProfilePage /></Gate>} />
+        <Route path="/edit-profile" component={() => <Gate><EditProfile /></Gate>} />
+        <Route path="/manage-photos" component={() => <Gate><ManagePhotosReal /></Gate>} />
+        <Route
+  path="/profile-photo-setup"
+  component={() => (
+    <AuthOnly>
+      <ProfilePhotoSetup />
+    </AuthOnly>
+  )}
+/>
+        <Route path="/profile-photos" component={() => <Gate><ManagePhotosReal /></Gate>} />
+        <Route path="/privacy-settings" component={() => <Gate><PrivacySettings /></Gate>} />
+        <Route path="/interests" component={() => <Gate><Interests /></Gate>} />
+        <Route path="/admin" component={() => <Gate><Admin /></Gate>} />
+
+        <Route path="/not-found" component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </ErrorBoundary>
+  );
+}
+
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+function stripBase(path: string) { return basePath && path.startsWith(basePath) ? path.slice(basePath.length) || '/' : path; }
+
+function ClerkQueryClientCacheInvalidator() {
+  const { addListener } = useClerk();
+  const previousUserId = useRef<string | null | undefined>(undefined);
+  useEffect(() => addListener(({ user }) => {
+    const nextUserId = user?.id ?? null;
+    if (previousUserId.current !== undefined && previousUserId.current !== nextUserId) queryClient.clear();
+    previousUserId.current = nextUserId;
+  }), [addListener]);
+  return null;
+}
+
+function App() {
+  return (
+    <WouterRouter base={basePath}>
+      <ClerkProvider
+        publishableKey={clerkPubKey}
+        appearance={{
+          theme: shadcn,
+          cssLayerName: 'clerk',
+          options: {
+            logoPlacement: 'inside',
+            logoLinkUrl: basePath || '/',
+            logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
+          },
+          variables: {
+            colorPrimary: '#1f5960',
+            colorForeground: '#22383a',
+            colorMutedForeground: '#688084',
+            colorBackground: '#fffdf7',
+            colorInput: '#fffdf7',
+            colorInputForeground: '#22383a',
+            colorDanger: '#aa5040',
+            colorNeutral: '#d8d1c5',
+            fontFamily: 'DM Sans, sans-serif',
+            borderRadius: '0.75rem',
+          },
+          elements: {
+            rootBox: 'w-full flex justify-center',
+            cardBox: 'bg-[#fffdf7] rounded-2xl w-[440px] max-w-full overflow-hidden',
+            card: '!shadow-none !border-0 !bg-transparent',
+            footer: '!shadow-none !border-0 !bg-transparent',
+            headerTitle: 'text-[#22383a]',
+            headerSubtitle: 'text-[#688084]',
+            socialButtonsBlockButtonText: 'text-[#22383a]',
+            formFieldLabel: 'text-[#22383a]',
+            footerActionLink: 'text-[#a75845]',
+            footerActionText: 'text-[#688084]',
+            dividerText: 'text-[#688084]',
+            formButtonPrimary: 'bg-[#1f5960] hover:bg-[#17464c]',
+            formFieldInput: 'bg-[#fffdf7] text-[#22383a] border-[#d8d1c5]',
+            socialButtonsBlockButton: 'border-[#d8d1c5] text-[#22383a]',
+            main: 'bg-transparent',
+          },
+        }}
+        signInUrl={`${basePath}/sign-in`}
+        signUpUrl={`${basePath}/sign-up`}
+        routerPush={(to) =>
+          window.history.pushState({}, '', stripBase(to))
+        }
+        routerReplace={(to) =>
+          window.history.replaceState({}, '', stripBase(to))
+        }
+      >
+        <ClerkApiAuthBridge />
+
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <ClerkQueryClientCacheInvalidator />
+            <Router />
+            <Toaster />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </ClerkProvider>
+    </WouterRouter>
+  );
+}
+export default App;

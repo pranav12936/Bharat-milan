@@ -9,7 +9,7 @@ import type { Report } from './report';
 
 export interface AdminReportList {
   items: Report[];
-  page: number;
+  page?: number;
   pageSize: number;
   total: number;
 }

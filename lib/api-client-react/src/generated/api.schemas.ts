@@ -64,11 +64,17 @@ export interface PartnerPreferences {
   /** @nullable */
   preferredDistrict: string | null;
   /** @nullable */
+  preferredReligion: string | null;
+  /** @nullable */
+  preferredCaste: string | null;
+  /** @nullable */
   preferredEducation: string | null;
   /** @nullable */
   preferredProfession: string | null;
   /** @nullable */
   preferredCommunity: string | null;
+  /** @nullable */
+  preferredIncomeRange: string | null;
   /** @nullable */
   preferredMaritalStatus: string | null;
   /** @nullable */
@@ -85,8 +91,61 @@ export type MyProfile = PublicProfile & {
      * @maximum 100
      */
   completion: number;
+  dateOfBirth?: string;
+  phone?: string;
+  address?: string;
+  religion?: string;
+  community?: string;
+  caste?: string;
+  subCaste?: string;
+  ethnicBackground?: string;
+  motherTongue?: string;
+  state?: string;
+  currentCity?: string;
+  district?: string;
+  nativePlace?: string;
+  qualifications?: string;
+  college?: string;
+  profession?: string;
+  jobTitle?: string;
+  company?: string;
+  workLocation?: string;
+  employmentDetails?: string;
+  incomeRange?: string;
+  visaWorkStatus?: string;
+  bodyType?: string;
+  appearance?: string;
+  /** @maxLength 1200 */
+  lifestyleInformation?: string;
+  smoking?: string;
+  drinking?: string;
+  foodPreferences?: string;
+  /** @maxLength 1200 */
+  healthInformation?: string;
+  fatherOccupation?: string;
+  fatherStatus?: string;
+  motherOccupation?: string;
+  motherStatus?: string;
+  /** @minimum 0 */
+  siblingsCount?: number;
+  /** @minimum 0 */
+  brothersCount?: number;
+  /** @minimum 0 */
+  sistersCount?: number;
+  /** @minimum 0 */
+  marriedSiblingsCount?: number;
+  /** @minimum 0 */
+  unmarriedSiblingsCount?: number;
+  familyType?: string;
+  /** @maxLength 1200 */
+  familyInformation?: string;
+  hobbies?: string;
+  languages?: string;
+  culturalInterests?: string;
+  familyValues?: string;
   preferences: PartnerPreferences;
 };
+
 export interface DashboardSummary {
   profile: MyProfile;
   sentInterests: number;
@@ -108,14 +167,19 @@ export interface ProfileInput {
   fullName: string;
   dateOfBirth: string;
   gender: string;
+  phone?: string;
+  address?: string;
   /**
-     * @minimum 100
-     * @maximum 240
+     * @minimum 50
+     * @maximum 250
      */
   height?: number;
   maritalStatus?: string;
   religion?: string;
   community?: string;
+  caste?: string;
+  subCaste?: string;
+  ethnicBackground?: string;
   motherTongue?: string;
   state?: string;
   district?: string;
@@ -124,19 +188,43 @@ export interface ProfileInput {
   /** @maxLength 1200 */
   about?: string;
   education?: string;
+  qualifications?: string;
   college?: string;
   profession?: string;
   jobTitle?: string;
   company?: string;
   workLocation?: string;
+  employmentDetails?: string;
   incomeRange?: string;
-  /** @maxLength 1200 */
-  familyInformation?: string;
+  visaWorkStatus?: string;
+  bodyType?: string;
+  appearance?: string;
   /** @maxLength 1200 */
   lifestyleInformation?: string;
+  smoking?: string;
+  drinking?: string;
+  foodPreferences?: string;
+  /** @maxLength 1200 */
+  healthInformation?: string;
+  fatherOccupation?: string;
+  fatherStatus?: string;
+  motherOccupation?: string;
+  motherStatus?: string;
+  /** @minimum 0 */
+  siblingsCount?: number;
+  /** @minimum 0 */
+  brothersCount?: number;
+  /** @minimum 0 */
+  sistersCount?: number;
+  /** @minimum 0 */
+  marriedSiblingsCount?: number;
+  /** @minimum 0 */
+  unmarriedSiblingsCount?: number;
+  familyType?: string;
+  /** @maxLength 1200 */
+  familyInformation?: string;
   hobbies?: string;
   languages?: string;
-  foodPreferences?: string;
   culturalInterests?: string;
   familyValues?: string;
   visibility?: ProfileInputVisibility;
@@ -144,15 +232,18 @@ export interface ProfileInput {
   preferredAgeMin?: number;
   /** @minimum 18 */
   preferredAgeMax?: number;
-  /** @minimum 100 */
+  /** @minimum 50 */
   preferredHeightMin?: number;
-  /** @minimum 100 */
+  /** @minimum 50 */
   preferredHeightMax?: number;
   preferredLocation?: string;
   preferredDistrict?: string;
+  preferredReligion?: string;
+  preferredCaste?: string;
   preferredEducation?: string;
   preferredProfession?: string;
   preferredCommunity?: string;
+  preferredIncomeRange?: string;
   preferredMaritalStatus?: string;
   preferredFamilyValues?: string;
   /** @maxLength 1200 */
@@ -165,6 +256,150 @@ export interface ProfileList {
   pageSize: number;
   total: number;
   totalPages: number;
+}
+
+export type ProfileSetupStepInputData = { [key: string]: unknown };
+
+export interface ProfileSetupStepInput {
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  step: number;
+  data: ProfileSetupStepInputData;
+}
+
+export interface ProfileSetupStepResponse {
+  success: boolean;
+  step: number;
+  nextStep: number;
+  profileSetupCompleted: boolean;
+}
+
+export interface ProfileSetupProfile {
+  id: string;
+  fullName: string;
+  dateOfBirth: string;
+  age: number;
+  gender: string;
+  /** @nullable */
+  phone?: string | null;
+  email: string;
+  /** @nullable */
+  address?: string | null;
+  /** @nullable */
+  currentCity?: string | null;
+  /** @nullable */
+  state?: string | null;
+  /** @nullable */
+  district?: string | null;
+  /** @nullable */
+  religion?: string | null;
+  /** @nullable */
+  community?: string | null;
+  /** @nullable */
+  caste?: string | null;
+  /** @nullable */
+  subCaste?: string | null;
+  /** @nullable */
+  ethnicBackground?: string | null;
+  /** @nullable */
+  motherTongue?: string | null;
+  /** @nullable */
+  languages?: string | null;
+  /** @nullable */
+  nativePlace?: string | null;
+  /** @nullable */
+  culturalInterests?: string | null;
+  /** @nullable */
+  education?: string | null;
+  /** @nullable */
+  qualifications?: string | null;
+  /** @nullable */
+  college?: string | null;
+  /** @nullable */
+  profession?: string | null;
+  /** @nullable */
+  jobTitle?: string | null;
+  /** @nullable */
+  company?: string | null;
+  /** @nullable */
+  workLocation?: string | null;
+  /** @nullable */
+  employmentDetails?: string | null;
+  /** @nullable */
+  incomeRange?: string | null;
+  /** @nullable */
+  visaWorkStatus?: string | null;
+  /** @nullable */
+  height?: number | null;
+  /** @nullable */
+  bodyType?: string | null;
+  /** @nullable */
+  appearance?: string | null;
+  /** @nullable */
+  lifestyleInformation?: string | null;
+  /** @nullable */
+  smoking?: string | null;
+  /** @nullable */
+  drinking?: string | null;
+  /** @nullable */
+  foodPreferences?: string | null;
+  /** @nullable */
+  healthInformation?: string | null;
+  /** @nullable */
+  fatherOccupation?: string | null;
+  /** @nullable */
+  fatherStatus?: string | null;
+  /** @nullable */
+  motherOccupation?: string | null;
+  /** @nullable */
+  motherStatus?: string | null;
+  /** @nullable */
+  siblingsCount?: number | null;
+  /** @nullable */
+  brothersCount?: number | null;
+  /** @nullable */
+  sistersCount?: number | null;
+  /** @nullable */
+  marriedSiblingsCount?: number | null;
+  /** @nullable */
+  unmarriedSiblingsCount?: number | null;
+  /** @nullable */
+  familyType?: string | null;
+  /** @nullable */
+  familyValues?: string | null;
+  /** @nullable */
+  familyInformation?: string | null;
+  /** @nullable */
+  maritalStatus?: string | null;
+  /** @nullable */
+  about?: string | null;
+  /** @nullable */
+  hobbies?: string | null;
+}
+
+export type ProfileSetupPreferences = PartnerPreferences;
+
+export interface ProfileSetupState {
+  profileExists: boolean;
+  profileSetupCompleted: boolean;
+  currentStep: number;
+  profile: ProfileSetupProfile | null;
+  preferences: ProfileSetupPreferences | null;
+  photoCount: number;
+  hasPrimaryPhoto: boolean;
+}
+
+export interface ProfileSetupCompleteResponse {
+  success: boolean;
+  profileSetupCompleted: boolean;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  profileCompletion: number;
+  message: string;
 }
 
 export type VisibilityInputVisibility = typeof VisibilityInputVisibility[keyof typeof VisibilityInputVisibility];
@@ -279,6 +514,7 @@ export const ReportStatus = {
   open: 'open',
   reviewed: 'reviewed',
   dismissed: 'dismissed',
+  actioned: 'actioned',
 } as const;
 
 export interface Report {
@@ -291,9 +527,48 @@ export interface Report {
   createdAt: string;
 }
 
+export type AdminReportUpdateStatus = typeof AdminReportUpdateStatus[keyof typeof AdminReportUpdateStatus];
+
+
+export const AdminReportUpdateStatus = {
+  open: 'open',
+  reviewed: 'reviewed',
+  dismissed: 'dismissed',
+  actioned: 'actioned',
+} as const;
+
+export interface AdminReportUpdate {
+  status: AdminReportUpdateStatus;
+}
+
+export type AdminUserStatusUpdateStatus = typeof AdminUserStatusUpdateStatus[keyof typeof AdminUserStatusUpdateStatus];
+
+
+export const AdminUserStatusUpdateStatus = {
+  active: 'active',
+  suspended: 'suspended',
+} as const;
+
+export interface AdminUserStatusUpdate {
+  status: AdminUserStatusUpdateStatus;
+}
+
+export type AdminUserStatusResponseStatus = typeof AdminUserStatusResponseStatus[keyof typeof AdminUserStatusResponseStatus];
+
+
+export const AdminUserStatusResponseStatus = {
+  active: 'active',
+  suspended: 'suspended',
+} as const;
+
+export interface AdminUserStatusResponse {
+  id: string;
+  status: AdminUserStatusResponseStatus;
+}
+
 export interface AdminReportList {
   items: Report[];
-  page: number;
+  page?: number;
   pageSize: number;
   total: number;
 }
@@ -390,6 +665,7 @@ profession?: string;
 community?: string;
 maritalStatus?: string;
 };
+
 export type ListAdminReportsParams = {
 /**
  * @minimum 1

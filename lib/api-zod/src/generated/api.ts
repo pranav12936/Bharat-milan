@@ -15,11 +15,29 @@ import * as zod from 'zod';
 export const HealthCheckResponse = zod.object({
   "status": zod.string()
 })
+
+
 /**
  * @summary Get the current user's dashboard summary
  */
 export const getDashboardResponseProfileTwoCompletionMin = 0;
 export const getDashboardResponseProfileTwoCompletionMax = 100;
+
+export const getDashboardResponseProfileTwoLifestyleInformationMax = 1200;
+
+export const getDashboardResponseProfileTwoHealthInformationMax = 1200;
+
+export const getDashboardResponseProfileTwoSiblingsCountMin = 0;
+
+export const getDashboardResponseProfileTwoBrothersCountMin = 0;
+
+export const getDashboardResponseProfileTwoSistersCountMin = 0;
+
+export const getDashboardResponseProfileTwoMarriedSiblingsCountMin = 0;
+
+export const getDashboardResponseProfileTwoUnmarriedSiblingsCountMin = 0;
+
+export const getDashboardResponseProfileTwoFamilyInformationMax = 1200;
 
 
 
@@ -52,6 +70,50 @@ export const GetDashboardResponse = zod.object({
   "email": zod.string().email(),
   "visibility": zod.enum(['public', 'private']),
   "completion": zod.number().int().min(getDashboardResponseProfileTwoCompletionMin).max(getDashboardResponseProfileTwoCompletionMax),
+  "dateOfBirth": zod.coerce.date().optional(),
+  "phone": zod.string().optional(),
+  "address": zod.string().optional(),
+  "religion": zod.string().optional(),
+  "community": zod.string(),
+  "caste": zod.string().optional(),
+  "subCaste": zod.string().optional(),
+  "ethnicBackground": zod.string().optional(),
+  "motherTongue": zod.string().optional(),
+  "state": zod.string().optional(),
+  "currentCity": zod.string().optional(),
+  "district": zod.string().optional(),
+  "nativePlace": zod.string().optional(),
+  "qualifications": zod.string().optional(),
+  "college": zod.string().optional(),
+  "profession": zod.string(),
+  "jobTitle": zod.string().optional(),
+  "company": zod.string().optional(),
+  "workLocation": zod.string().optional(),
+  "employmentDetails": zod.string().optional(),
+  "incomeRange": zod.string().optional(),
+  "visaWorkStatus": zod.string().optional(),
+  "bodyType": zod.string().optional(),
+  "appearance": zod.string().optional(),
+  "lifestyleInformation": zod.string().max(getDashboardResponseProfileTwoLifestyleInformationMax).optional(),
+  "smoking": zod.string().optional(),
+  "drinking": zod.string().optional(),
+  "foodPreferences": zod.string().optional(),
+  "healthInformation": zod.string().max(getDashboardResponseProfileTwoHealthInformationMax).optional(),
+  "fatherOccupation": zod.string().optional(),
+  "fatherStatus": zod.string().optional(),
+  "motherOccupation": zod.string().optional(),
+  "motherStatus": zod.string().optional(),
+  "siblingsCount": zod.number().int().min(getDashboardResponseProfileTwoSiblingsCountMin).optional(),
+  "brothersCount": zod.number().int().min(getDashboardResponseProfileTwoBrothersCountMin).optional(),
+  "sistersCount": zod.number().int().min(getDashboardResponseProfileTwoSistersCountMin).optional(),
+  "marriedSiblingsCount": zod.number().int().min(getDashboardResponseProfileTwoMarriedSiblingsCountMin).optional(),
+  "unmarriedSiblingsCount": zod.number().int().min(getDashboardResponseProfileTwoUnmarriedSiblingsCountMin).optional(),
+  "familyType": zod.string().optional(),
+  "familyInformation": zod.string().max(getDashboardResponseProfileTwoFamilyInformationMax).optional(),
+  "hobbies": zod.string().optional(),
+  "languages": zod.string().optional(),
+  "culturalInterests": zod.string().optional(),
+  "familyValues": zod.string().optional(),
   "preferences": zod.object({
   "preferredAgeMin": zod.number().int().nullable(),
   "preferredAgeMax": zod.number().int().nullable(),
@@ -59,9 +121,12 @@ export const GetDashboardResponse = zod.object({
   "preferredHeightMax": zod.number().int().nullable(),
   "preferredLocation": zod.string().nullable(),
   "preferredDistrict": zod.string().nullable(),
+  "preferredReligion": zod.string().nullable(),
+  "preferredCaste": zod.string().nullable(),
   "preferredEducation": zod.string().nullable(),
   "preferredProfession": zod.string().nullable(),
   "preferredCommunity": zod.string().nullable(),
+  "preferredIncomeRange": zod.string().nullable(),
   "preferredMaritalStatus": zod.string().nullable(),
   "preferredFamilyValues": zod.string().nullable(),
   "otherPreferences": zod.string().nullable()
@@ -99,10 +164,149 @@ export const GetDashboardResponse = zod.object({
 
 
 /**
+ * Returns the user's onboarding progress, saved profile information, partner preferences and photo status.
+ * @summary Get the current user's profile setup progress
+ */
+export const GetProfileSetupResponse = zod.object({
+  "profileExists": zod.boolean(),
+  "profileSetupCompleted": zod.boolean(),
+  "currentStep": zod.number().int(),
+  "profile": zod.union([zod.object({
+  "id": zod.string(),
+  "fullName": zod.string(),
+  "dateOfBirth": zod.coerce.date(),
+  "age": zod.number().int(),
+  "gender": zod.string(),
+  "phone": zod.string().nullish(),
+  "email": zod.string().email(),
+  "address": zod.string().nullish(),
+  "currentCity": zod.string().nullish(),
+  "state": zod.string().nullish(),
+  "district": zod.string().nullish(),
+  "religion": zod.string().nullish(),
+  "community": zod.string().nullish(),
+  "caste": zod.string().nullish(),
+  "subCaste": zod.string().nullish(),
+  "ethnicBackground": zod.string().nullish(),
+  "motherTongue": zod.string().nullish(),
+  "languages": zod.string().nullish(),
+  "nativePlace": zod.string().nullish(),
+  "culturalInterests": zod.string().nullish(),
+  "education": zod.string().nullish(),
+  "qualifications": zod.string().nullish(),
+  "college": zod.string().nullish(),
+  "profession": zod.string().nullish(),
+  "jobTitle": zod.string().nullish(),
+  "company": zod.string().nullish(),
+  "workLocation": zod.string().nullish(),
+  "employmentDetails": zod.string().nullish(),
+  "incomeRange": zod.string().nullish(),
+  "visaWorkStatus": zod.string().nullish(),
+  "height": zod.number().int().nullish(),
+  "bodyType": zod.string().nullish(),
+  "appearance": zod.string().nullish(),
+  "lifestyleInformation": zod.string().nullish(),
+  "smoking": zod.string().nullish(),
+  "drinking": zod.string().nullish(),
+  "foodPreferences": zod.string().nullish(),
+  "healthInformation": zod.string().nullish(),
+  "fatherOccupation": zod.string().nullish(),
+  "fatherStatus": zod.string().nullish(),
+  "motherOccupation": zod.string().nullish(),
+  "motherStatus": zod.string().nullish(),
+  "siblingsCount": zod.number().int().nullish(),
+  "brothersCount": zod.number().int().nullish(),
+  "sistersCount": zod.number().int().nullish(),
+  "marriedSiblingsCount": zod.number().int().nullish(),
+  "unmarriedSiblingsCount": zod.number().int().nullish(),
+  "familyType": zod.string().nullish(),
+  "familyValues": zod.string().nullish(),
+  "familyInformation": zod.string().nullish(),
+  "maritalStatus": zod.string().nullish(),
+  "about": zod.string().nullish(),
+  "hobbies": zod.string().nullish()
+}),zod.null()]),
+  "preferences": zod.union([zod.object({
+  "preferredAgeMin": zod.number().int().nullable(),
+  "preferredAgeMax": zod.number().int().nullable(),
+  "preferredHeightMin": zod.number().int().nullable(),
+  "preferredHeightMax": zod.number().int().nullable(),
+  "preferredLocation": zod.string().nullable(),
+  "preferredDistrict": zod.string().nullable(),
+  "preferredReligion": zod.string().nullable(),
+  "preferredCaste": zod.string().nullable(),
+  "preferredEducation": zod.string().nullable(),
+  "preferredProfession": zod.string().nullable(),
+  "preferredCommunity": zod.string().nullable(),
+  "preferredIncomeRange": zod.string().nullable(),
+  "preferredMaritalStatus": zod.string().nullable(),
+  "preferredFamilyValues": zod.string().nullable(),
+  "otherPreferences": zod.string().nullable()
+}),zod.null()]),
+  "photoCount": zod.number().int(),
+  "hasPrimaryPhoto": zod.boolean()
+})
+
+
+/**
+ * Saves one of the five profile information steps. Progress is persisted so the user can leave and continue later.
+ * @summary Save one profile setup step
+ */
+export const saveProfileSetupStepBodyStepMax = 5;
+
+
+
+export const SaveProfileSetupStepBody = zod.object({
+  "step": zod.number().int().min(1).max(saveProfileSetupStepBodyStepMax),
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+export const SaveProfileSetupStepResponse = zod.object({
+  "success": zod.boolean(),
+  "step": zod.number().int(),
+  "nextStep": zod.number().int(),
+  "profileSetupCompleted": zod.boolean()
+})
+
+
+/**
+ * Marks the profile as complete after all five information steps and a primary profile photo have been saved.
+ * @summary Complete profile onboarding
+ */
+export const completeProfileSetupResponseProfileCompletionMin = 0;
+export const completeProfileSetupResponseProfileCompletionMax = 100;
+
+
+
+export const CompleteProfileSetupResponse = zod.object({
+  "success": zod.boolean(),
+  "profileSetupCompleted": zod.boolean(),
+  "profileCompletion": zod.number().int().min(completeProfileSetupResponseProfileCompletionMin).max(completeProfileSetupResponseProfileCompletionMax),
+  "message": zod.string()
+})
+
+
+/**
  * @summary Get the current user's profile
  */
 export const getMyProfileResponseTwoCompletionMin = 0;
 export const getMyProfileResponseTwoCompletionMax = 100;
+
+export const getMyProfileResponseTwoLifestyleInformationMax = 1200;
+
+export const getMyProfileResponseTwoHealthInformationMax = 1200;
+
+export const getMyProfileResponseTwoSiblingsCountMin = 0;
+
+export const getMyProfileResponseTwoBrothersCountMin = 0;
+
+export const getMyProfileResponseTwoSistersCountMin = 0;
+
+export const getMyProfileResponseTwoMarriedSiblingsCountMin = 0;
+
+export const getMyProfileResponseTwoUnmarriedSiblingsCountMin = 0;
+
+export const getMyProfileResponseTwoFamilyInformationMax = 1200;
 
 
 
@@ -134,6 +338,50 @@ export const GetMyProfileResponse = zod.object({
   "email": zod.string().email(),
   "visibility": zod.enum(['public', 'private']),
   "completion": zod.number().int().min(getMyProfileResponseTwoCompletionMin).max(getMyProfileResponseTwoCompletionMax),
+  "dateOfBirth": zod.coerce.date().optional(),
+  "phone": zod.string().optional(),
+  "address": zod.string().optional(),
+  "religion": zod.string().optional(),
+  "community": zod.string(),
+  "caste": zod.string().optional(),
+  "subCaste": zod.string().optional(),
+  "ethnicBackground": zod.string().optional(),
+  "motherTongue": zod.string().optional(),
+  "state": zod.string().optional(),
+  "currentCity": zod.string().optional(),
+  "district": zod.string().optional(),
+  "nativePlace": zod.string().optional(),
+  "qualifications": zod.string().optional(),
+  "college": zod.string().optional(),
+  "profession": zod.string(),
+  "jobTitle": zod.string().optional(),
+  "company": zod.string().optional(),
+  "workLocation": zod.string().optional(),
+  "employmentDetails": zod.string().optional(),
+  "incomeRange": zod.string().optional(),
+  "visaWorkStatus": zod.string().optional(),
+  "bodyType": zod.string().optional(),
+  "appearance": zod.string().optional(),
+  "lifestyleInformation": zod.string().max(getMyProfileResponseTwoLifestyleInformationMax).optional(),
+  "smoking": zod.string().optional(),
+  "drinking": zod.string().optional(),
+  "foodPreferences": zod.string().optional(),
+  "healthInformation": zod.string().max(getMyProfileResponseTwoHealthInformationMax).optional(),
+  "fatherOccupation": zod.string().optional(),
+  "fatherStatus": zod.string().optional(),
+  "motherOccupation": zod.string().optional(),
+  "motherStatus": zod.string().optional(),
+  "siblingsCount": zod.number().int().min(getMyProfileResponseTwoSiblingsCountMin).optional(),
+  "brothersCount": zod.number().int().min(getMyProfileResponseTwoBrothersCountMin).optional(),
+  "sistersCount": zod.number().int().min(getMyProfileResponseTwoSistersCountMin).optional(),
+  "marriedSiblingsCount": zod.number().int().min(getMyProfileResponseTwoMarriedSiblingsCountMin).optional(),
+  "unmarriedSiblingsCount": zod.number().int().min(getMyProfileResponseTwoUnmarriedSiblingsCountMin).optional(),
+  "familyType": zod.string().optional(),
+  "familyInformation": zod.string().max(getMyProfileResponseTwoFamilyInformationMax).optional(),
+  "hobbies": zod.string().optional(),
+  "languages": zod.string().optional(),
+  "culturalInterests": zod.string().optional(),
+  "familyValues": zod.string().optional(),
   "preferences": zod.object({
   "preferredAgeMin": zod.number().int().nullable(),
   "preferredAgeMax": zod.number().int().nullable(),
@@ -141,9 +389,12 @@ export const GetMyProfileResponse = zod.object({
   "preferredHeightMax": zod.number().int().nullable(),
   "preferredLocation": zod.string().nullable(),
   "preferredDistrict": zod.string().nullable(),
+  "preferredReligion": zod.string().nullable(),
+  "preferredCaste": zod.string().nullable(),
   "preferredEducation": zod.string().nullable(),
   "preferredProfession": zod.string().nullable(),
   "preferredCommunity": zod.string().nullable(),
+  "preferredIncomeRange": zod.string().nullable(),
   "preferredMaritalStatus": zod.string().nullable(),
   "preferredFamilyValues": zod.string().nullable(),
   "otherPreferences": zod.string().nullable()
@@ -156,22 +407,34 @@ export const GetMyProfileResponse = zod.object({
  */
 export const updateMyProfileBodyFullNameMin = 2;
 
-export const updateMyProfileBodyHeightMin = 100;
-export const updateMyProfileBodyHeightMax = 240;
+export const updateMyProfileBodyHeightMin = 50;
+export const updateMyProfileBodyHeightMax = 250;
 
 export const updateMyProfileBodyAboutMax = 1200;
 
-export const updateMyProfileBodyFamilyInformationMax = 1200;
-
 export const updateMyProfileBodyLifestyleInformationMax = 1200;
+
+export const updateMyProfileBodyHealthInformationMax = 1200;
+
+export const updateMyProfileBodySiblingsCountMin = 0;
+
+export const updateMyProfileBodyBrothersCountMin = 0;
+
+export const updateMyProfileBodySistersCountMin = 0;
+
+export const updateMyProfileBodyMarriedSiblingsCountMin = 0;
+
+export const updateMyProfileBodyUnmarriedSiblingsCountMin = 0;
+
+export const updateMyProfileBodyFamilyInformationMax = 1200;
 
 export const updateMyProfileBodyPreferredAgeMinMin = 18;
 
 export const updateMyProfileBodyPreferredAgeMaxMin = 18;
 
-export const updateMyProfileBodyPreferredHeightMinMin = 100;
+export const updateMyProfileBodyPreferredHeightMinMin = 50;
 
-export const updateMyProfileBodyPreferredHeightMaxMin = 100;
+export const updateMyProfileBodyPreferredHeightMaxMin = 50;
 
 export const updateMyProfileBodyOtherPreferencesMax = 1200;
 
@@ -181,10 +444,15 @@ export const UpdateMyProfileBody = zod.object({
   "fullName": zod.string().min(updateMyProfileBodyFullNameMin),
   "dateOfBirth": zod.coerce.date(),
   "gender": zod.string(),
+  "phone": zod.string().optional(),
+  "address": zod.string().optional(),
   "height": zod.number().int().min(updateMyProfileBodyHeightMin).max(updateMyProfileBodyHeightMax).optional(),
   "maritalStatus": zod.string().optional(),
   "religion": zod.string().optional(),
   "community": zod.string().optional(),
+  "caste": zod.string().optional(),
+  "subCaste": zod.string().optional(),
+  "ethnicBackground": zod.string().optional(),
   "motherTongue": zod.string().optional(),
   "state": zod.string().optional(),
   "district": zod.string().optional(),
@@ -192,17 +460,35 @@ export const UpdateMyProfileBody = zod.object({
   "nativePlace": zod.string().optional(),
   "about": zod.string().max(updateMyProfileBodyAboutMax).optional(),
   "education": zod.string().optional(),
+  "qualifications": zod.string().optional(),
   "college": zod.string().optional(),
   "profession": zod.string().optional(),
   "jobTitle": zod.string().optional(),
   "company": zod.string().optional(),
   "workLocation": zod.string().optional(),
+  "employmentDetails": zod.string().optional(),
   "incomeRange": zod.string().optional(),
-  "familyInformation": zod.string().max(updateMyProfileBodyFamilyInformationMax).optional(),
+  "visaWorkStatus": zod.string().optional(),
+  "bodyType": zod.string().optional(),
+  "appearance": zod.string().optional(),
   "lifestyleInformation": zod.string().max(updateMyProfileBodyLifestyleInformationMax).optional(),
+  "smoking": zod.string().optional(),
+  "drinking": zod.string().optional(),
+  "foodPreferences": zod.string().optional(),
+  "healthInformation": zod.string().max(updateMyProfileBodyHealthInformationMax).optional(),
+  "fatherOccupation": zod.string().optional(),
+  "fatherStatus": zod.string().optional(),
+  "motherOccupation": zod.string().optional(),
+  "motherStatus": zod.string().optional(),
+  "siblingsCount": zod.number().int().min(updateMyProfileBodySiblingsCountMin).optional(),
+  "brothersCount": zod.number().int().min(updateMyProfileBodyBrothersCountMin).optional(),
+  "sistersCount": zod.number().int().min(updateMyProfileBodySistersCountMin).optional(),
+  "marriedSiblingsCount": zod.number().int().min(updateMyProfileBodyMarriedSiblingsCountMin).optional(),
+  "unmarriedSiblingsCount": zod.number().int().min(updateMyProfileBodyUnmarriedSiblingsCountMin).optional(),
+  "familyType": zod.string().optional(),
+  "familyInformation": zod.string().max(updateMyProfileBodyFamilyInformationMax).optional(),
   "hobbies": zod.string().optional(),
   "languages": zod.string().optional(),
-  "foodPreferences": zod.string().optional(),
   "culturalInterests": zod.string().optional(),
   "familyValues": zod.string().optional(),
   "visibility": zod.enum(['public', 'private']).optional(),
@@ -212,9 +498,12 @@ export const UpdateMyProfileBody = zod.object({
   "preferredHeightMax": zod.number().int().min(updateMyProfileBodyPreferredHeightMaxMin).optional(),
   "preferredLocation": zod.string().optional(),
   "preferredDistrict": zod.string().optional(),
+  "preferredReligion": zod.string().optional(),
+  "preferredCaste": zod.string().optional(),
   "preferredEducation": zod.string().optional(),
   "preferredProfession": zod.string().optional(),
   "preferredCommunity": zod.string().optional(),
+  "preferredIncomeRange": zod.string().optional(),
   "preferredMaritalStatus": zod.string().optional(),
   "preferredFamilyValues": zod.string().optional(),
   "otherPreferences": zod.string().max(updateMyProfileBodyOtherPreferencesMax).optional()
@@ -222,6 +511,22 @@ export const UpdateMyProfileBody = zod.object({
 
 export const updateMyProfileResponseTwoCompletionMin = 0;
 export const updateMyProfileResponseTwoCompletionMax = 100;
+
+export const updateMyProfileResponseTwoLifestyleInformationMax = 1200;
+
+export const updateMyProfileResponseTwoHealthInformationMax = 1200;
+
+export const updateMyProfileResponseTwoSiblingsCountMin = 0;
+
+export const updateMyProfileResponseTwoBrothersCountMin = 0;
+
+export const updateMyProfileResponseTwoSistersCountMin = 0;
+
+export const updateMyProfileResponseTwoMarriedSiblingsCountMin = 0;
+
+export const updateMyProfileResponseTwoUnmarriedSiblingsCountMin = 0;
+
+export const updateMyProfileResponseTwoFamilyInformationMax = 1200;
 
 
 
@@ -253,6 +558,50 @@ export const UpdateMyProfileResponse = zod.object({
   "email": zod.string().email(),
   "visibility": zod.enum(['public', 'private']),
   "completion": zod.number().int().min(updateMyProfileResponseTwoCompletionMin).max(updateMyProfileResponseTwoCompletionMax),
+  "dateOfBirth": zod.coerce.date().optional(),
+  "phone": zod.string().optional(),
+  "address": zod.string().optional(),
+  "religion": zod.string().optional(),
+  "community": zod.string(),
+  "caste": zod.string().optional(),
+  "subCaste": zod.string().optional(),
+  "ethnicBackground": zod.string().optional(),
+  "motherTongue": zod.string().optional(),
+  "state": zod.string().optional(),
+  "currentCity": zod.string().optional(),
+  "district": zod.string().optional(),
+  "nativePlace": zod.string().optional(),
+  "qualifications": zod.string().optional(),
+  "college": zod.string().optional(),
+  "profession": zod.string(),
+  "jobTitle": zod.string().optional(),
+  "company": zod.string().optional(),
+  "workLocation": zod.string().optional(),
+  "employmentDetails": zod.string().optional(),
+  "incomeRange": zod.string().optional(),
+  "visaWorkStatus": zod.string().optional(),
+  "bodyType": zod.string().optional(),
+  "appearance": zod.string().optional(),
+  "lifestyleInformation": zod.string().max(updateMyProfileResponseTwoLifestyleInformationMax).optional(),
+  "smoking": zod.string().optional(),
+  "drinking": zod.string().optional(),
+  "foodPreferences": zod.string().optional(),
+  "healthInformation": zod.string().max(updateMyProfileResponseTwoHealthInformationMax).optional(),
+  "fatherOccupation": zod.string().optional(),
+  "fatherStatus": zod.string().optional(),
+  "motherOccupation": zod.string().optional(),
+  "motherStatus": zod.string().optional(),
+  "siblingsCount": zod.number().int().min(updateMyProfileResponseTwoSiblingsCountMin).optional(),
+  "brothersCount": zod.number().int().min(updateMyProfileResponseTwoBrothersCountMin).optional(),
+  "sistersCount": zod.number().int().min(updateMyProfileResponseTwoSistersCountMin).optional(),
+  "marriedSiblingsCount": zod.number().int().min(updateMyProfileResponseTwoMarriedSiblingsCountMin).optional(),
+  "unmarriedSiblingsCount": zod.number().int().min(updateMyProfileResponseTwoUnmarriedSiblingsCountMin).optional(),
+  "familyType": zod.string().optional(),
+  "familyInformation": zod.string().max(updateMyProfileResponseTwoFamilyInformationMax).optional(),
+  "hobbies": zod.string().optional(),
+  "languages": zod.string().optional(),
+  "culturalInterests": zod.string().optional(),
+  "familyValues": zod.string().optional(),
   "preferences": zod.object({
   "preferredAgeMin": zod.number().int().nullable(),
   "preferredAgeMax": zod.number().int().nullable(),
@@ -260,9 +609,12 @@ export const UpdateMyProfileResponse = zod.object({
   "preferredHeightMax": zod.number().int().nullable(),
   "preferredLocation": zod.string().nullable(),
   "preferredDistrict": zod.string().nullable(),
+  "preferredReligion": zod.string().nullable(),
+  "preferredCaste": zod.string().nullable(),
   "preferredEducation": zod.string().nullable(),
   "preferredProfession": zod.string().nullable(),
   "preferredCommunity": zod.string().nullable(),
+  "preferredIncomeRange": zod.string().nullable(),
   "preferredMaritalStatus": zod.string().nullable(),
   "preferredFamilyValues": zod.string().nullable(),
   "otherPreferences": zod.string().nullable()
@@ -536,7 +888,7 @@ export const CreateReportResponse = zod.object({
   "reportedProfileId": zod.string(),
   "reason": zod.string(),
   "description": zod.string().nullable(),
-  "status": zod.enum(['open', 'reviewed', 'dismissed']),
+  "status": zod.enum(['open', 'reviewed', 'dismissed', 'actioned']),
   "createdAt": zod.coerce.date()
 })
 
@@ -596,10 +948,50 @@ export const ListAdminReportsResponse = zod.object({
   "reportedProfileId": zod.string(),
   "reason": zod.string(),
   "description": zod.string().nullable(),
-  "status": zod.enum(['open', 'reviewed', 'dismissed']),
+  "status": zod.enum(['open', 'reviewed', 'dismissed', 'actioned']),
   "createdAt": zod.coerce.date()
 })),
-  "page": zod.number().int(),
+  "page": zod.number().int().optional(),
   "pageSize": zod.number().int(),
   "total": zod.number().int()
 })
+
+
+/**
+ * @summary Update the moderation status of a profile report
+ */
+export const UpdateAdminReportParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const UpdateAdminReportBody = zod.object({
+  "status": zod.enum(['open', 'reviewed', 'dismissed', 'actioned'])
+})
+
+export const UpdateAdminReportResponse = zod.object({
+  "id": zod.string(),
+  "reportedProfileId": zod.string(),
+  "reason": zod.string(),
+  "description": zod.string().nullable(),
+  "status": zod.enum(['open', 'reviewed', 'dismissed', 'actioned']),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Activate or suspend a member account
+ */
+export const UpdateAdminUserStatusParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const UpdateAdminUserStatusBody = zod.object({
+  "status": zod.enum(['active', 'suspended'])
+})
+
+export const UpdateAdminUserStatusResponse = zod.object({
+  "id": zod.string(),
+  "status": zod.enum(['active', 'suspended'])
+})
+
+

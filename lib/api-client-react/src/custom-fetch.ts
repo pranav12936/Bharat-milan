@@ -103,11 +103,11 @@ function isJsonMediaType(mediaType: string | null): boolean {
 function isTextMediaType(mediaType: string | null): boolean {
   return Boolean(
     mediaType &&
-      (mediaType.startsWith("text/") ||
-        mediaType === "application/xml" ||
-        mediaType === "text/xml" ||
-        mediaType.endsWith("+xml") ||
-        mediaType === "application/x-www-form-urlencoded"),
+    (mediaType.startsWith("text/") ||
+      mediaType === "application/xml" ||
+      mediaType === "text/xml" ||
+      mediaType.endsWith("+xml") ||
+      mediaType === "application/x-www-form-urlencoded"),
   );
 }
 
@@ -218,7 +218,7 @@ export class ResponseParseError extends Error {
   ) {
     super(
       `Failed to parse response from ${requestInfo.method} ${response.url || requestInfo.url} ` +
-        `(${response.status} ${response.statusText}) as JSON`,
+      `(${response.status} ${response.statusText}) as JSON`,
     );
     Object.setPrototypeOf(this, new.target.prototype);
 
@@ -315,7 +315,7 @@ async function parseSuccessBody(
       if (typeof response.blob !== "function") {
         throw new TypeError(
           "Blob responses are not supported in this runtime. " +
-            "Use responseType \"json\" or \"text\" instead.",
+          "Use responseType \"json\" or \"text\" instead.",
         );
       }
       return response.blob();
@@ -349,10 +349,15 @@ export async function customFetch<T = unknown>(
     headers.set("accept", DEFAULT_JSON_ACCEPT);
   }
 
-  // Attach bearer token when an auth getter is configured and no
-  // Authorization header has been explicitly provided.
   if (_authTokenGetter && !headers.has("authorization")) {
     const token = await _authTokenGetter();
+
+    console.log(
+      "[CUSTOM FETCH] Authorization token:",
+      token ? "ATTACHED" : "MISSING",
+      resolveUrl(input),
+    );
+
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }

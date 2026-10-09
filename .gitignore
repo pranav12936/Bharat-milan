@@ -47,3 +47,38 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Local data and uploaded files
+
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Keep local project files; ignore actual secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Dependencies and generated build output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

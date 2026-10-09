@@ -7,7 +7,13 @@
  */
 
 export * from './adminReportList';
+export * from './adminReportUpdate';
+export * from './adminReportUpdateStatus';
 export * from './adminStats';
+export * from './adminUserStatusResponse';
+export * from './adminUserStatusResponseStatus';
+export * from './adminUserStatusUpdate';
+export * from './adminUserStatusUpdateStatus';
 export * from './badRequestResponse';
 export * from './dashboardSummary';
 export * from './error';
@@ -34,6 +40,13 @@ export * from './photoUploadInput';
 export * from './profileInput';
 export * from './profileInputVisibility';
 export * from './profileList';
+export * from './profileSetupCompleteResponse';
+export * from './profileSetupPreferences';
+export * from './profileSetupProfile';
+export * from './profileSetupState';
+export * from './profileSetupStepInput';
+export * from './profileSetupStepInputData';
+export * from './profileSetupStepResponse';
 export * from './publicProfile';
 export * from './report';
 export * from './reportInput';

@@ -1,0 +1,1000 @@
+
+          <p className="mt-2 text-sm text-muted-foreground">
+            {person.age} years · {person.city || "Add your city"}
+          </p>
+
+          <div className="mt-6 h-2 overflow-hidden rounded-full bg-secondary">
+            <div
+              className="h-full rounded-full bg-accent"
+              style={{ width: `${person.completion}%` }}
+            />
+          </div>
+
+          <p className="mt-2 font-mono-ui text-[10px] uppercase tracking-wider text-muted-foreground">
+            {person.completion}% complete
+          </p>
+        </section>
+
+        <section className="grid gap-4 sm:grid-cols-2">
+          <InfoBlock
+            title="About"
+            body={person.about}
+          />
+
+          <InfoBlock
+            title="Work & education"
+            body={[person.profession, person.education]
+              .filter(Boolean)
+              .join(" · ")}
+          />
+
+          <InfoBlock
+            title="Roots"
+            body={[person.nativePlace, person.district, person.community]
+              .filter(Boolean)
+              .join(" · ")}
+          />
+
+          <InfoBlock
+            title="Visibility"
+            body={`Your profile is ${person.visibility}. ${person.visibility === "public"
+                ? "It can appear in discovery."
+                : "It is hidden from discovery."
+              }`}
+          />
+        </section>
+      </div>
+    </>
+  );
+}
+const emptyForm: ProfileInput = { fullName: '', dateOfBirth: '1990-01-01', gender: '', height: undefined, maritalStatus: '', community: '', motherTongue: '', state: 'Uttarakhand', district: '', currentCity: '', nativePlace: '', about: '', education: '', college: '', profession: '', jobTitle: '', company: '', workLocation: '', incomeRange: '', familyInformation: '', lifestyleInformation: '', hobbies: '', languages: '', foodPreferences: '', culturalInterests: '', familyValues: '', visibility: 'private', preferredAgeMin: 24, preferredAgeMax: 35, preferredHeightMin: undefined, preferredHeightMax: undefined, preferredLocation: '', preferredDistrict: '', preferredEducation: '', preferredProfession: '', preferredCommunity: '', preferredMaritalStatus: '', preferredFamilyValues: '', otherPreferences: '' };
+function EditProfile() {
+  const profile = useGetMyProfile({
+    query: { queryKey: getGetMyProfileQueryKey() },
+  });
+
+  const update = useUpdateMyProfile();
+
+  const [form, setForm] = useState<ProfileInput>(emptyForm);
+  const [initialized, setInitialized] = useState(false);
+  const [toast, setToast] = useState('');
+
+  useEffect(() => {
+    if (profile.data && !initialized) {
+      const p = profile.data;
+
+      // A new profile may not have preferences yet.
+      const preferences = p.preferences ?? {};
+
+      setForm({
+        ...emptyForm,
+
+        fullName: p.fullName ?? '',
+        gender: p.gender ?? '',
+        height: p.height ?? undefined,
+        maritalStatus: p.maritalStatus ?? '',
+        community: p.community ?? '',
+        district: p.district ?? '',
+        currentCity: p.city ?? '',
+        nativePlace: p.nativePlace ?? '',
+        about: p.about ?? '',
+        education: p.education ?? '',
+        profession: p.profession ?? '',
+        hobbies: p.hobbies ?? '',
+        languages: p.languages ?? '',
+        familyValues: p.familyValues ?? '',
+        visibility: p.visibility ?? 'private',
+
+        preferredAgeMin:
+          preferences.preferredAgeMin ?? emptyForm.preferredAgeMin,
+
+        preferredAgeMax:
+          preferences.preferredAgeMax ?? emptyForm.preferredAgeMax,
+
+        preferredHeightMin:
+          preferences.preferredHeightMin ?? undefined,
+
+        preferredHeightMax:
+          preferences.preferredHeightMax ?? undefined,
+
+        preferredLocation:
+          preferences.preferredLocation ?? '',
+
+        preferredDistrict:
+          preferences.preferredDistrict ?? '',
+
+        preferredEducation:
+          preferences.preferredEducation ?? '',
+
+        preferredProfession:
+          preferences.preferredProfession ?? '',
+
+        preferredCommunity:
+          preferences.preferredCommunity ?? '',
+
+        preferredMaritalStatus:
+          preferences.preferredMaritalStatus ?? '',
+
+        preferredFamilyValues:
+          preferences.preferredFamilyValues ?? '',
+
+        otherPreferences:
+          preferences.otherPreferences ?? '',
+      });
+
+      setInitialized(true);
+    }
+  }, [profile.data, initialized]);
+
+  const set = (
+    key: keyof ProfileInput,
+    value: string | number | undefined,
+  ) => {
+    setForm((current) => ({
+      ...current,
+      [key]: value,
+    }));
+  };
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+
+    update.mutate(
+      { data: form },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: getGetMyProfileQueryKey(),
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: getGetDashboardQueryKey(),
+          });
+
+          setToast('Your profile is saved.');
+        },
+
+        onError: (error) => {
+          setToast(errorText(error));
+        },
+      },
+    );
+  };
+
+  if (profile.isLoading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-20" />
+        <Skeleton className="h-[500px]" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <PageHeading
+        eyebrow="Edit profile"
+        title="Make it sound like you."
+        body="You can save part of your profile now and return to the rest later."
+        action={
+          <Button
+            type="submit"
+            form="profile-form"
+            disabled={update.isPending}
+            data-testid="button-save-profile"
+          >
+            {update.isPending ? 'Saving…' : 'Save changes'}
+            <Check size={16} />
+          </Button>
+        }
+      />
+
+      {toast && (
+        <p
+          className="mt-5 rounded-xl bg-primary/10 p-3 text-sm text-primary"
+          role="status"
+          data-testid="status-profile-save"
+        >
+          {toast}
+        </p>
+      )}
+
+      <form
+        id="profile-form"
+        onSubmit={submit}
+        className="mt-7 space-y-7"
+      >
+        <FormSection
+          title="The basics"
+          note="Start with the details someone would want to know first."
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput
+              label="Full name"
+              required
+              value={form.fullName}
+              onChange={(e) => set('fullName', e.target.value)}
+              data-testid="input-profile-full-name"
+            />
+
+            <TextInput
+              label="Date of birth"
+              type="date"
+              required
+              value={form.dateOfBirth}
+              onChange={(e) => set('dateOfBirth', e.target.value)}
+              data-testid="input-profile-date-of-birth"
+            />
+
+            <SelectInput
+              label="Gender"
+              required
+              value={form.gender}
+              onChange={(e) => set('gender', e.target.value)}
+              data-testid="select-profile-gender"
+            >
+              <option value="">Choose one</option>
+              <option value="Woman">Woman</option>
+              <option value="Man">Man</option>
+              <option value="Non-binary">Non-binary</option>
+            </SelectInput>
+
+            <TextInput
+              label="Height (cm)"
+              type="number"
+              min="100"
+              max="240"
+              value={form.height ?? ''}
+              onChange={(e) =>
+                set(
+                  'height',
+                  e.target.value
+                    ? Number(e.target.value)
+                    : undefined,
+                )
+              }
+              data-testid="input-profile-height"
+            />
+
+            <SelectInput
+              label="Marital status"
+              value={form.maritalStatus}
+              onChange={(e) =>
+                set('maritalStatus', e.target.value)
+              }
+              data-testid="select-profile-marital"
+            >
+              <option value="">Prefer not to say</option>
+              <option value="Never married">Never married</option>
+              <option value="Divorced">Divorced</option>
+              <option value="Widowed">Widowed</option>
+            </SelectInput>
+
+            <TextInput
+              label="Community"
+              value={form.community}
+              onChange={(e) =>
+                set('community', e.target.value)
+              }
+              placeholder="Garhwali, Kumaoni…"
+              data-testid="input-profile-community"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection
+          title="Place & work"
+          note="Context helps an introduction feel more human."
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput
+              label="Current city"
+              value={form.currentCity}
+              onChange={(e) =>
+                set('currentCity', e.target.value)
+              }
+              data-testid="input-profile-city"
+            />
+
+            <TextInput
+              label="District"
+              value={form.district}
+              onChange={(e) =>
+                set('district', e.target.value)
+              }
+              data-testid="input-profile-district"
+            />
+
+            <TextInput
+              label="Native place"
+              value={form.nativePlace}
+              onChange={(e) =>
+                set('nativePlace', e.target.value)
+              }
+              data-testid="input-profile-native-place"
+            />
+
+            <TextInput
+              label="Education"
+              value={form.education}
+              onChange={(e) =>
+                set('education', e.target.value)
+              }
+              data-testid="input-profile-education"
+            />
+
+            <TextInput
+              label="Profession"
+              value={form.profession}
+              onChange={(e) =>
+                set('profession', e.target.value)
+              }
+              data-testid="input-profile-profession"
+            />
+
+            <TextInput
+              label="Work location"
+              value={form.workLocation}
+              onChange={(e) =>
+                set('workLocation', e.target.value)
+              }
+              data-testid="input-profile-work-location"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection
+          title="Your voice"
+          note="A few honest lines are often more helpful than a perfect profile."
+        >
+          <div className="grid gap-4">
+            <TextArea
+              label="About you"
+              maxLength={1200}
+              value={form.about}
+              onChange={(e) =>
+                set('about', e.target.value)
+              }
+              placeholder="What brings steadiness and joy to your life?"
+              data-testid="textarea-profile-about"
+            />
+
+            <TextInput
+              label="Languages"
+              value={form.languages}
+              onChange={(e) =>
+                set('languages', e.target.value)
+              }
+              placeholder="Hindi, Garhwali, English"
+              data-testid="input-profile-languages"
+            />
+
+            <TextInput
+              label="Hobbies & interests"
+              value={form.hobbies}
+              onChange={(e) =>
+                set('hobbies', e.target.value)
+              }
+              data-testid="input-profile-hobbies"
+            />
+
+            <TextInput
+              label="Family values"
+              value={form.familyValues}
+              onChange={(e) =>
+                set('familyValues', e.target.value)
+              }
+              data-testid="input-profile-family-values"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection
+          title="Who you hope to meet"
+          note="Preferences guide discovery; they do not make people a checklist."
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput
+              label="Preferred age from"
+              type="number"
+              min="18"
+              value={form.preferredAgeMin ?? ''}
+              onChange={(e) =>
+                set(
+                  'preferredAgeMin',
+                  e.target.value
+                    ? Number(e.target.value)
+                    : undefined,
+                )
+              }
+              data-testid="input-preference-age-min"
+            />
+
+            <TextInput
+              label="Preferred age to"
+              type="number"
+              min="18"
+              value={form.preferredAgeMax ?? ''}
+              onChange={(e) =>
+                set(
+                  'preferredAgeMax',
+                  e.target.value
+                    ? Number(e.target.value)
+                    : undefined,
+                )
+              }
+              data-testid="input-preference-age-max"
+            />
+
+            <TextInput
+              label="Preferred location"
+              value={form.preferredLocation}
+              onChange={(e) =>
+                set('preferredLocation', e.target.value)
+              }
+              data-testid="input-preference-location"
+            />
+
+            <TextInput
+              label="Preferred community"
+              value={form.preferredCommunity}
+              onChange={(e) =>
+                set('preferredCommunity', e.target.value)
+              }
+              data-testid="input-preference-community"
+            />
+
+            <TextInput
+              label="Preferred education"
+              value={form.preferredEducation}
+              onChange={(e) =>
+                set('preferredEducation', e.target.value)
+              }
+              data-testid="input-preference-education"
+            />
+
+            <TextInput
+              label="Preferred family values"
+              value={form.preferredFamilyValues}
+              onChange={(e) =>
+                set('preferredFamilyValues', e.target.value)
+              }
+              data-testid="input-preference-values"
+            />
+          </div>
+        </FormSection>
+      </form>
+    </>
+  );
+}
+function FormSection({
+  title,
+  note,
+  children,
+}: {
+  title: string;
+  note: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5 md:p-7">
+      <h2 className="font-display text-3xl text-primary">
+        {title}
+      </h2>
+
+      <p className="mt-1 text-sm text-muted-foreground">
+        {note}
+      </p>
+
+      <div className="mt-6">
+        {children}
+      </div>
+    </section>
+  );
+} function ManagePhotos() {
+  const profile = useGetMyProfile({
+    query: {
+      queryKey: getGetMyProfileQueryKey(),
+    },
+  });
+
+  const upload = useUploadPhoto();
+  const remove = useDeletePhoto();
+  const update = useUpdatePhoto();
+
+  const [toast, setToast] = useState('');
+
+  const files = profile.data?.photos ?? [];
+
+  const onFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      setToast('Please choose a JPG, JPEG, or PNG image.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setToast('Please choose an image under 5 MB.');
+      return;
+    }
+
+    upload.mutate(
+      {
+        data: {
+          file,
+          isPrimary: files.length === 0,
+        },
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: getGetMyProfileQueryKey(),
+          });
+
+          setToast('Photo added to your profile.');
+        },
+
+        onError: (error) => setToast(errorText(error)),
+      },
+    );
+  };
+
+  const removePhoto = (id: string) => {
+    if (!window.confirm('Remove this photo from your profile?')) {
+      return;
+    }
+
+    remove.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: getGetMyProfileQueryKey(),
+          });
+
+          setToast('Photo removed.');
+        },
+
+        onError: (error) => setToast(errorText(error)),
+      },
+    );
+  };
+
+  const setPrimary = (id: string) => {
+    update.mutate(
+      {
+        id,
+        data: {
+          isPrimary: true,
+        },
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: getGetMyProfileQueryKey(),
+          });
+
+          setToast('Primary photo updated.');
+        },
+
+        onError: (error) => setToast(errorText(error)),
+      },
+    );
+  };
+
+  return (
+    <>
+      <PageHeading
+        eyebrow="Photos"
+        title="Let people see your world."
+        body="A clear, recent photo helps an introduction feel real. You can add JPG, JPEG, or PNG files up to 5 MB."
+        action={
+          <label className="focus-ring inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl bg-accent px-4 text-sm font-bold text-accent-foreground">
+            <Plus size={16} />
+            Add photo
+
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+              className="sr-only"
+              onChange={onFile}
+              disabled={upload.isPending}
+              data-testid="input-upload-photo"
+            />
+          </label>
+        }
+      />
+
+      {toast && (
+        <p
+          className="mt-5 rounded-xl bg-primary/10 p-3 text-sm text-primary"
+          role="status"
+          data-testid="status-photo-action"
+        >
+          {toast}
+        </p>
+      )}
+
+      {profile.isLoading ? (
+        <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Skeleton className="aspect-[4/3]" />
+          <Skeleton className="aspect-[4/3]" />
+          <Skeleton className="aspect-[4/3]" />
+        </div>
+      ) : files.length ? (
+        <div className="mt-7 grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2].map((column) => (
+            <div
+              key={column}
+              className="flex min-w-0 flex-col gap-4"
+            >
+              {files
+                .filter((_, index) => index % 3 === column)
+                .map((photo) => (
+                  <div
+                    key={photo.id}
+                    className="h-fit w-full overflow-hidden rounded-2xl border border-border bg-card"
+                    data-testid={`card-photo-${photo.id}`}
+                  >
+                    <div className="w-full bg-secondary">
+                      {photo.url ? (
+                        <img
+                          src={photo.url}
+                          alt="Your profile"
+                          className="block h-auto w-full"
+                        />
+                      ) : (
+                        <div className="flex min-h-64 w-full items-center justify-center text-muted-foreground">
+                          <ImagePlus />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 p-3">
+                      {photo.isPrimary ? (
+                        <span className="rounded-lg bg-primary/10 px-2 py-1 font-mono-ui text-[10px] uppercase tracking-wider text-primary">
+                          Primary
+                        </span>
+                      ) : (
+                        <button
+                          className="text-xs font-semibold text-accent"
+                          onClick={() => setPrimary(photo.id)}
+                          data-testid={`button-primary-photo-${photo.id}`}
+                        >
+                          Make primary
+                        </button>
+                      )}
+
+                      <button
+                        className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                        onClick={() => removePhoto(photo.id)}
+                        aria-label="Remove photo"
+                        data-testid={`button-delete-photo-${photo.id}`}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-7">
+          <EmptyState
+            icon={<ImagePlus size={22} />}
+            title="Your gallery is empty"
+            body="Add one clear photo to help your introduction feel more personal. You are always in control of what you share."
+            action={
+              <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-bold text-accent">
+                Choose a photo
+
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                  className="sr-only"
+                  onChange={onFile}
+                  data-testid="input-empty-upload-photo"
+                />
+              </label>
+            }
+          />
+        </div>
+      )}
+    </>
+  );
+}
+function PhotoCropper({
+  file,
+  onCancel,
+  onCrop,
+}: {
+  file: File;
+  onCancel: () => void;
+  onCrop: (croppedFile: File) => void;
+}) {
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const editorRef = useRef<HTMLDivElement | null>(null);
+
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Crop rectangle in editor coordinates.
+  const [crop, setCrop] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
+
+  const [zoom, setZoom] = useState(1);
+
+  const [draggingImage, setDraggingImage] =
+    useState(false);
+
+  const [dragStart, setDragStart] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  const [imagePosition, setImagePosition] =
+    useState({
+      x: 0,
+      y: 0,
+    });
+
+  const [startImagePosition, setStartImagePosition] =
+    useState({
+      x: 0,
+      y: 0,
+    });
+
+  const [resizing, setResizing] = useState<
+    'nw' | 'ne' | 'sw' | 'se' | null
+  >(null);
+
+  const [resizeStart, setResizeStart] =
+    useState({
+      x: 0,
+      y: 0,
+      crop: {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      },
+    });
+
+  const [processing, setProcessing] =
+    useState(false);
+
+  useEffect(() => {
+    const url = URL.createObjectURL(file);
+
+    setImageUrl(url);
+    setImageLoaded(false);
+    setZoom(1);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [file]);
+
+  const setupEditor = () => {
+    const editor = editorRef.current;
+    const image = imageRef.current;
+
+    if (!editor || !image) return;
+
+    const editorWidth = editor.clientWidth;
+    const editorHeight = editor.clientHeight;
+
+    if (
+      !image.naturalWidth ||
+      !image.naturalHeight
+    ) {
+      return;
+    }
+
+    /*
+     * Fit the complete original image inside
+     * the editor first.
+     */
+    const fitScale = Math.min(
+      editorWidth / image.naturalWidth,
+      editorHeight / image.naturalHeight,
+    );
+
+    const displayedWidth =
+      image.naturalWidth * fitScale;
+
+    const displayedHeight =
+      image.naturalHeight * fitScale;
+
+    const imageX =
+      (editorWidth - displayedWidth) / 2;
+
+    const imageY =
+      (editorHeight - displayedHeight) / 2;
+
+    setImagePosition({
+      x: imageX,
+      y: imageY,
+    });
+
+    /*
+     * IMPORTANT:
+     * Start with the COMPLETE image selected.
+     */
+    setCrop({
+      x: imageX,
+      y: imageY,
+      width: displayedWidth,
+      height: displayedHeight,
+    });
+
+    setImageLoaded(true);
+  };
+
+  const getImageDisplaySize = () => {
+    const image = imageRef.current;
+
+    if (!image) {
+      return {
+        width: 0,
+        height: 0,
+      };
+    }
+
+    const editor = editorRef.current;
+
+    if (!editor) {
+      return {
+        width: 0,
+        height: 0,
+      };
+    }
+
+    const fitScale = Math.min(
+      editor.clientWidth / image.naturalWidth,
+      editor.clientHeight / image.naturalHeight,
+    );
+
+    return {
+      width:
+        image.naturalWidth *
+        fitScale *
+        zoom,
+
+      height:
+        image.naturalHeight *
+        fitScale *
+        zoom,
+    };
+  };
+
+  const moveImage = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    if (!draggingImage || resizing) return;
+
+    const deltaX =
+      event.clientX - dragStart.x;
+
+    const deltaY =
+      event.clientY - dragStart.y;
+
+    setImagePosition({
+      x: startImagePosition.x + deltaX,
+      y: startImagePosition.y + deltaY,
+    });
+  };
+
+  const startImageDrag = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    if (resizing) return;
+
+    event.preventDefault();
+
+    setDraggingImage(true);
+
+    setDragStart({
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    setStartImagePosition(
+      imagePosition,
+    );
+  };
+
+  const stopPointer = () => {
+    setDraggingImage(false);
+    setResizing(null);
+  };
+
+  const startResize = (
+    handle:
+      | 'nw'
+      | 'ne'
+      | 'sw'
+      | 'se',
+    event: React.PointerEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setResizing(handle);
+
+    setResizeStart({
+      x: event.clientX,
+      y: event.clientY,
+      crop: { ...crop },
+    });
+  };
+
+  const resizeCrop = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    if (!resizing) return;
+
+    const editor = editorRef.current;
+
+    if (!editor) return;
+
+    const dx =
+      event.clientX -
+      resizeStart.x;
+
+    const dy =
+      event.clientY -
+      resizeStart.y;
+
+    const original =
+      resizeStart.crop;
+
+    const minSize = 80;
+
+    let next = {
+      ...original,
+    };
+
+    if (resizing === 'se') {
+      next.width = Math.max(
+        minSize,
+        original.width + dx,
+      );
+
+      next.height = Math.max(
+        minSize,
+        original.height + dy,
+      );
+    }
+
+    if (resizing === 'sw') {
+      const newX = Math.min(
+        original.x + dx,
+        original.x +
+        original.width -
+        minSize,
+      );
+
+      next.x = newX;
+
+      next.width =
+        original.width -
+        (newX - original.x);
+
+      next.height = Math.max(
+        minSize,
+        original.height + dy,
+      );
+    }
+
+    if (resizing === 'ne') {
+      const newY = Math.min(
+        original.y + dy,

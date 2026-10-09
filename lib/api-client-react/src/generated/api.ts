@@ -21,7 +21,10 @@ import type {
 
 import type {
   AdminReportList,
+  AdminReportUpdate,
   AdminStats,
+  AdminUserStatusResponse,
+  AdminUserStatusUpdate,
   BadRequestResponse,
   DashboardSummary,
   Error,
@@ -40,6 +43,10 @@ import type {
   PhotoUploadInput,
   ProfileInput,
   ProfileList,
+  ProfileSetupCompleteResponse,
+  ProfileSetupState,
+  ProfileSetupStepInput,
+  ProfileSetupStepResponse,
   PublicProfile,
   Report,
   ReportInput,
@@ -151,6 +158,10 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
 
 
 
+
+
+
+
 export const getGetDashboardUrl = () => {
 
 
@@ -221,6 +232,255 @@ export function useGetDashboard<TData = Awaited<ReturnType<typeof getDashboard>>
 
   return withQueryKey(query, queryOptions.queryKey);
 }
+
+
+
+
+
+
+
+export const getGetProfileSetupUrl = () => {
+
+
+
+
+  return `/api/profile/setup`
+}
+
+/**
+ * Returns the user's onboarding progress, saved profile information, partner preferences and photo status.
+ * @summary Get the current user's profile setup progress
+ */
+export const getProfileSetup = async ( options?: Parameters<typeof customFetch>[1]): Promise<ProfileSetupState> => {
+
+  return customFetch<ProfileSetupState>(getGetProfileSetupUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProfileSetupQueryKey = () => {
+    return [
+    `/api/profile/setup`
+    ] as const;
+    }
+
+
+export const getGetProfileSetupQueryOptions = <TData = Awaited<ReturnType<typeof getProfileSetup>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfileSetup>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProfileSetupQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfileSetup>>> = ({ signal }) => getProfileSetup({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProfileSetup>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProfileSetupQueryResult = NonNullable<Awaited<ReturnType<typeof getProfileSetup>>>
+export type GetProfileSetupQueryError = ErrorType<UnauthorizedResponse>
+
+
+/**
+ * @summary Get the current user's profile setup progress
+ */
+
+export function useGetProfileSetup<TData = Awaited<ReturnType<typeof getProfileSetup>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfileSetup>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProfileSetupQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveProfileSetupStepUrl = () => {
+
+
+
+
+  return `/api/profile/setup`
+}
+
+/**
+ * Saves one of the five profile information steps. Progress is persisted so the user can leave and continue later.
+ * @summary Save one profile setup step
+ */
+export const saveProfileSetupStep = async (profileSetupStepInput: ProfileSetupStepInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfileSetupStepResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfileSetupStepResponse>(getSaveProfileSetupStepUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(profileSetupStepInput)
+  }
+);}
+
+
+
+
+
+export const getSaveProfileSetupStepMutationKey = () => ['saveProfileSetupStep'] as const;
+
+export const getSaveProfileSetupStepMutationOptions = <TError = ErrorType<BadRequestResponse | UnauthorizedResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveProfileSetupStep>>, TError,SaveProfileSetupStepMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveProfileSetupStep>>, TError,SaveProfileSetupStepMutationVariables, TContext> => {
+
+const mutationKey = getSaveProfileSetupStepMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveProfileSetupStep>>, SaveProfileSetupStepMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  saveProfileSetupStep(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveProfileSetupStepMutationResult = NonNullable<Awaited<ReturnType<typeof saveProfileSetupStep>>>
+    export type SaveProfileSetupStepMutationBody = BodyType<ProfileSetupStepInput>
+    export type SaveProfileSetupStepMutationError = ErrorType<BadRequestResponse | UnauthorizedResponse>
+    export type SaveProfileSetupStepMutationVariables = {data: BodyType<ProfileSetupStepInput>}
+
+    /**
+ * @summary Save one profile setup step
+ */
+export const useSaveProfileSetupStep = <TError = ErrorType<BadRequestResponse | UnauthorizedResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveProfileSetupStep>>, TError,SaveProfileSetupStepMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveProfileSetupStep>>,
+        TError,
+        SaveProfileSetupStepMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveProfileSetupStepMutationOptions(options));
+    }
+
+export const getCompleteProfileSetupUrl = () => {
+
+
+
+
+  return `/api/profile/setup/complete`
+}
+
+/**
+ * Marks the profile as complete after all five information steps and a primary profile photo have been saved.
+ * @summary Complete profile onboarding
+ */
+export const completeProfileSetup = async ( options?: Parameters<typeof customFetch>[1]): Promise<ProfileSetupCompleteResponse> => {
+
+  return customFetch<ProfileSetupCompleteResponse>(getCompleteProfileSetupUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getCompleteProfileSetupMutationKey = () => ['completeProfileSetup'] as const;
+
+export const getCompleteProfileSetupMutationOptions = <TError = ErrorType<BadRequestResponse | UnauthorizedResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof completeProfileSetup>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof completeProfileSetup>>, TError,void, TContext> => {
+
+const mutationKey = getCompleteProfileSetupMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof completeProfileSetup>>, void> = () => {
+
+
+          return  completeProfileSetup(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CompleteProfileSetupMutationResult = NonNullable<Awaited<ReturnType<typeof completeProfileSetup>>>
+
+    export type CompleteProfileSetupMutationError = ErrorType<BadRequestResponse | UnauthorizedResponse>
+
+
+    /**
+ * @summary Complete profile onboarding
+ */
+export const useCompleteProfileSetup = <TError = ErrorType<BadRequestResponse | UnauthorizedResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof completeProfileSetup>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof completeProfileSetup>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getCompleteProfileSetupMutationOptions(options));
+    }
+
 export const getGetMyProfileUrl = () => {
 
 
@@ -1541,4 +1801,182 @@ export function useListAdminReports<TData = Awaited<ReturnType<typeof listAdminR
 
 
 
+
+export const getUpdateAdminReportUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/reports/${id}`
+}
+
+/**
+ * @summary Update the moderation status of a profile report
+ */
+export const updateAdminReport = async (id: string,
+    adminReportUpdate: AdminReportUpdate, options?: Parameters<typeof customFetch>[1]): Promise<Report> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Report>(getUpdateAdminReportUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminReportUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateAdminReportMutationKey = () => ['updateAdminReport'] as const;
+
+export const getUpdateAdminReportMutationOptions = <TError = ErrorType<BadRequestResponse | UnauthorizedResponse | ForbiddenResponse | NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminReport>>, TError,UpdateAdminReportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminReport>>, TError,UpdateAdminReportMutationVariables, TContext> => {
+
+const mutationKey = getUpdateAdminReportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminReport>>, UpdateAdminReportMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminReport(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminReportMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminReport>>>
+    export type UpdateAdminReportMutationBody = BodyType<AdminReportUpdate>
+    export type UpdateAdminReportMutationError = ErrorType<BadRequestResponse | UnauthorizedResponse | ForbiddenResponse | NotFoundResponse>
+    export type UpdateAdminReportMutationVariables = {id: string;data: BodyType<AdminReportUpdate>}
+
+    /**
+ * @summary Update the moderation status of a profile report
+ */
+export const useUpdateAdminReport = <TError = ErrorType<BadRequestResponse | UnauthorizedResponse | ForbiddenResponse | NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminReport>>, TError,UpdateAdminReportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminReport>>,
+        TError,
+        UpdateAdminReportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateAdminReportMutationOptions(options));
+    }
+
+export const getUpdateAdminUserStatusUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/users/${id}/status`
+}
+
+/**
+ * @summary Activate or suspend a member account
+ */
+export const updateAdminUserStatus = async (id: string,
+    adminUserStatusUpdate: AdminUserStatusUpdate, options?: Parameters<typeof customFetch>[1]): Promise<AdminUserStatusResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdminUserStatusResponse>(getUpdateAdminUserStatusUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminUserStatusUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateAdminUserStatusMutationKey = () => ['updateAdminUserStatus'] as const;
+
+export const getUpdateAdminUserStatusMutationOptions = <TError = ErrorType<BadRequestResponse | UnauthorizedResponse | ForbiddenResponse | NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminUserStatus>>, TError,UpdateAdminUserStatusMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminUserStatus>>, TError,UpdateAdminUserStatusMutationVariables, TContext> => {
+
+const mutationKey = getUpdateAdminUserStatusMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminUserStatus>>, UpdateAdminUserStatusMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminUserStatus(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminUserStatusMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminUserStatus>>>
+    export type UpdateAdminUserStatusMutationBody = BodyType<AdminUserStatusUpdate>
+    export type UpdateAdminUserStatusMutationError = ErrorType<BadRequestResponse | UnauthorizedResponse | ForbiddenResponse | NotFoundResponse>
+    export type UpdateAdminUserStatusMutationVariables = {id: string;data: BodyType<AdminUserStatusUpdate>}
+
+    /**
+ * @summary Activate or suspend a member account
+ */
+export const useUpdateAdminUserStatus = <TError = ErrorType<BadRequestResponse | UnauthorizedResponse | ForbiddenResponse | NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminUserStatus>>, TError,UpdateAdminUserStatusMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminUserStatus>>,
+        TError,
+        UpdateAdminUserStatusMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateAdminUserStatusMutationOptions(options));
+    }
 

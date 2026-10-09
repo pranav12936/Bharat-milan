@@ -67,122 +67,187 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* LIGHT MODE */
+/* ============================================================
+   LIGHT MODE
+   Pahadi Bwari Theme
+   Ivory · Slate Blue · Dusty Beige · Sunset Coral
+   Golden Amber · Charcoal
+   ============================================================ */
+
 :root {
-  --button-outline: rgba(0, 0, 0, 0.1);
-  --badge-outline: rgba(0, 0, 0, 0.05);
+  --button-outline: rgba(41, 40, 39, 0.10);
+  --badge-outline: rgba(41, 40, 39, 0.05);
 
-  /* Automatic computation of border around primary / danger buttons */
-  --opaque-button-border-intensity: -8; /* In terms of percentages */
+  --opaque-button-border-intensity: -8;
 
-  /* Backgrounds applied on top of other backgrounds when hovered/active */
-  --elevate-1: rgba(0, 0, 0, 0.03);
-  --elevate-2: rgba(0, 0, 0, 0.08);
+  --elevate-1: rgba(41, 40, 39, 0.03);
+  --elevate-2: rgba(41, 40, 39, 0.08);
 
-  --background: 39 38% 96%;
-  --foreground: 195 28% 17%;
-  --border: 36 24% 84%;
-  --card: 40 50% 98%;
-  --card-foreground: 195 28% 17%;
-  --card-border: 36 26% 86%;
-  --sidebar: 190 34% 18%;
-  --sidebar-foreground: 39 38% 94%;
-  --sidebar-border: 190 25% 27%;
-  --sidebar-primary: 16 62% 57%;
-  --sidebar-primary-foreground: 38 45% 97%;
-  --sidebar-accent: 187 28% 26%;
-  --sidebar-accent-foreground: 39 38% 94%;
-  --sidebar-ring: 16 62% 57%;
-  --popover: 40 50% 98%;
-  --popover-foreground: 195 28% 17%;
-  --popover-border: 36 26% 86%;
-  --primary: 187 47% 28%;
-  --primary-foreground: 39 45% 97%;
-  --secondary: 35 30% 90%;
-  --secondary-foreground: 195 28% 17%;
-  --muted: 36 25% 91%;
-  --muted-foreground: 195 13% 45%;
-  --accent: 16 62% 57%;
-  --accent-foreground: 39 45% 97%;
-  --destructive: 3 55% 42%;
-  --destructive-foreground: 39 45% 97%;
-  --input: 36 24% 84%;
-  --ring: 16 62% 57%;
-  --chart-1: 187 47% 28%;
-  --chart-2: 16 62% 57%;
-  --chart-3: 44 68% 52%;
-  --chart-4: 145 30% 40%;
-  --chart-5: 195 25% 48%;
+  /* ----------------------------------------------------------
+     CHARCOAL
+     ---------------------------------------------------------- */
+
+  --foreground: 24 4% 16%;
+  --card-foreground: 24 4% 16%;
+  --popover-foreground: 24 4% 16%;
+  --secondary-foreground: 24 4% 16%;
+
+  /* ----------------------------------------------------------
+     IVORY
+     ---------------------------------------------------------- */
+
+  --background: 42 45% 98%;
+  --card: 40 38% 97%;
+  --popover: 40 38% 97%;
+
+  /* ----------------------------------------------------------
+     DUSTY BEIGE
+     ---------------------------------------------------------- */
+
+  --border: 32 24% 83%;
+  --card-border: 32 25% 86%;
+  --popover-border: 32 25% 86%;
+  --input: 32 24% 83%;
+
+  --secondary: 32 25% 89%;
+  --muted: 35 23% 91%;
+  --muted-foreground: 24 6% 43%;
+
+  /* ----------------------------------------------------------
+     SLATE BLUE
+     ---------------------------------------------------------- */
+
+  --primary: 211 21% 49%;
+  --primary-foreground: 40 38% 98%;
+
+  --sidebar: 211 21% 31%;
+  --sidebar-foreground: 40 38% 97%;
+  --sidebar-border: 211 17% 39%;
+
+  --sidebar-accent: 211 18% 39%;
+  --sidebar-accent-foreground: 40 38% 97%;
+
+  /* ----------------------------------------------------------
+     SUNSET CORAL
+     ---------------------------------------------------------- */
+
+  --accent: 13 72% 66%;
+  --accent-foreground: 24 4% 16%;
+
+  --sidebar-primary: 13 72% 66%;
+  --sidebar-primary-foreground: 24 4% 16%;
+
+  --ring: 13 72% 66%;
+  --sidebar-ring: 13 72% 66%;
+
+  /* ----------------------------------------------------------
+     GOLDEN AMBER
+     ---------------------------------------------------------- */
+
+  --chart-3: 40 82% 63%;
+
+  /* ----------------------------------------------------------
+     DESTRUCTIVE
+     ---------------------------------------------------------- */
+
+  --destructive: 3 60% 45%;
+  --destructive-foreground: 40 38% 98%;
+
+  /* ----------------------------------------------------------
+     CHARTS
+     ---------------------------------------------------------- */
+
+  --chart-1: 211 21% 49%;
+  --chart-2: 13 72% 66%;
+  --chart-4: 32 25% 69%;
+  --chart-5: 24 4% 32%;
+
+  /* ----------------------------------------------------------
+     FONTS
+     ---------------------------------------------------------- */
+
   --app-font-sans: 'DM Sans', sans-serif;
   --app-font-serif: 'Instrument Serif', Georgia, serif;
   --app-font-mono: 'DM Mono', monospace;
+
   --radius: 0.85rem;
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0); /*replace with H S L */
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0); /*replace with H S L */
+
+  /* ----------------------------------------------------------
+     SHADOWS
+     ---------------------------------------------------------- */
+
+  --shadow-2xs:
+    0px 2px 0px 0px hsl(24 4% 16% / 0);
+
+  --shadow-xs:
+    0px 2px 0px 0px hsl(24 4% 16% / 0);
+
   --shadow-sm:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 1px 2px -1px hsl(24 4% 16% / 0);
+
   --shadow:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 1px 2px -1px hsl(24 4% 16% / 0);
+
   --shadow-md:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 2px 4px -1px hsl(24 4% 16% / 0);
+
   --shadow-lg:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 4px 6px -1px hsl(24 4% 16% / 0);
+
   --shadow-xl:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 8px 10px -1px hsl(24 4% 16% / 0);
+
+  --shadow-2xl:
+    0px 2px 0px 0px hsl(24 4% 16% / 0);
+
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-  /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
+  /* ----------------------------------------------------------
+     AUTOMATIC BORDERS
+     ---------------------------------------------------------- */
 
-  /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(
     from hsl(var(--sidebar-primary)) h s
       calc(l + var(--opaque-button-border-intensity)) / alpha
   );
 
-  /* Fallback for older browsers */
   --sidebar-accent-border: hsl(var(--sidebar-accent));
   --sidebar-accent-border: hsl(
     from hsl(var(--sidebar-accent)) h s
       calc(l + var(--opaque-button-border-intensity)) / alpha
   );
 
-  /* Fallback for older browsers */
   --primary-border: hsl(var(--primary));
   --primary-border: hsl(
     from hsl(var(--primary)) h s
       calc(l + var(--opaque-button-border-intensity)) / alpha
   );
 
-  /* Fallback for older browsers */
   --secondary-border: hsl(var(--secondary));
   --secondary-border: hsl(
     from hsl(var(--secondary)) h s
       calc(l + var(--opaque-button-border-intensity)) / alpha
   );
 
-  /* Fallback for older browsers */
   --muted-border: hsl(var(--muted));
   --muted-border: hsl(
-    from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) /
-      alpha
+    from hsl(var(--muted)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
   );
 
-  /* Fallback for older browsers */
   --accent-border: hsl(var(--accent));
   --accent-border: hsl(
     from hsl(var(--accent)) h s
       calc(l + var(--opaque-button-border-intensity)) / alpha
   );
 
-  /* Fallback for older browsers */
   --destructive-border: hsl(var(--destructive));
   --destructive-border: hsl(
     from hsl(var(--destructive)) h s
@@ -190,70 +255,110 @@
   );
 }
 
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+
 .dark {
-  --button-outline: rgba(255, 255, 255, 0.1);
+  --button-outline: rgba(255, 255, 255, 0.10);
   --badge-outline: rgba(255, 255, 255, 0.05);
 
-  --opaque-button-border-intensity: 9; /* In terms of percentages */
+  --opaque-button-border-intensity: 9;
 
-  /* Backgrounds applied on top of other backgrounds when hovered/active */
   --elevate-1: rgba(255, 255, 255, 0.04);
   --elevate-2: rgba(255, 255, 255, 0.09);
 
-  --background: 195 28% 12%;
-  --foreground: 39 38% 94%;
-  --border: 190 18% 28%;
-  --card: 190 28% 16%;
-  --card-foreground: 39 38% 94%;
-  --card-border: 190 18% 28%;
-  --sidebar: 195 32% 9%;
-  --sidebar-foreground: 39 38% 94%;
-  --sidebar-border: 190 18% 21%;
-  --sidebar-primary: 16 62% 57%;
-  --sidebar-primary-foreground: 39 45% 97%;
-  --sidebar-accent: 190 28% 18%;
-  --sidebar-accent-foreground: 39 38% 94%;
-  --sidebar-ring: 16 62% 57%;
-  --popover: 190 28% 16%;
-  --popover-foreground: 39 38% 94%;
-  --popover-border: 190 18% 28%;
-  --primary: 187 47% 45%;
-  --primary-foreground: 195 32% 9%;
-  --secondary: 190 20% 24%;
-  --secondary-foreground: 39 38% 94%;
-  --muted: 190 20% 22%;
-  --muted-foreground: 39 19% 70%;
-  --accent: 16 62% 57%;
-  --accent-foreground: 195 32% 9%;
-  --destructive: 3 60% 56%;
-  --destructive-foreground: 195 32% 9%;
-  --input: 190 18% 28%;
-  --ring: 16 62% 57%;
-  --chart-1: 187 47% 45%;
-  --chart-2: 16 62% 57%;
-  --chart-3: 44 68% 52%;
-  --chart-4: 145 30% 45%;
-  --chart-5: 195 25% 60%;
+  /* Ivory */
+  --background: 220 15% 11%;
+  --foreground: 40 38% 96%;
 
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+  /* Cards */
+  --card: 220 14% 16%;
+  --card-foreground: 40 38% 96%;
+  --card-border: 220 12% 25%;
+
+  /* Sidebar */
+  --sidebar: 220 17% 9%;
+  --sidebar-foreground: 40 38% 96%;
+  --sidebar-border: 220 12% 21%;
+
+  /* Slate Blue */
+  --primary: 211 28% 62%;
+  --primary-foreground: 220 17% 9%;
+
+  --sidebar-accent: 211 20% 20%;
+  --sidebar-accent-foreground: 40 38% 96%;
+
+  /* Coral */
+  --accent: 13 72% 66%;
+  --accent-foreground: 220 17% 9%;
+
+  --sidebar-primary: 13 72% 66%;
+  --sidebar-primary-foreground: 220 17% 9%;
+
+  --sidebar-ring: 13 72% 66%;
+  --ring: 13 72% 66%;
+
+  /* Dusty Beige */
+  --secondary: 220 12% 24%;
+  --secondary-foreground: 40 38% 96%;
+
+  --muted: 220 12% 21%;
+  --muted-foreground: 40 19% 72%;
+
+  --border: 220 12% 28%;
+  --input: 220 12% 28%;
+
+  /* Popover */
+  --popover: 220 14% 16%;
+  --popover-foreground: 40 38% 96%;
+  --popover-border: 220 12% 28%;
+
+  /* Destructive */
+  --destructive: 3 60% 56%;
+  --destructive-foreground: 220 17% 9%;
+
+  /* Charts */
+  --chart-1: 211 28% 62%;
+  --chart-2: 13 72% 66%;
+  --chart-3: 40 82% 63%;
+  --chart-4: 32 25% 58%;
+  --chart-5: 24 4% 68%;
+
+  /* Shadows */
+  --shadow-2xs:
+    0px 2px 0px 0px hsl(24 4% 16% / 0);
+
+  --shadow-xs:
+    0px 2px 0px 0px hsl(24 4% 16% / 0);
+
   --shadow-sm:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 1px 2px -1px hsl(24 4% 16% / 0);
+
   --shadow:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 1px 2px -1px hsl(24 4% 16% / 0);
+
   --shadow-md:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 2px 4px -1px hsl(24 4% 16% / 0);
+
   --shadow-lg:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 4px 6px -1px hsl(24 4% 16% / 0);
+
   --shadow-xl:
-    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
-    0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+    0px 2px 0px 0px hsl(24 4% 16% / 0),
+    0px 8px 10px -1px hsl(24 4% 16% / 0);
+
+  --shadow-2xl:
+    0px 2px 0px 0px hsl(24 4% 16% / 0);
 }
+
+/* ============================================================
+   BASE
+   ============================================================ */
 
 @layer base {
   * {
@@ -265,28 +370,12 @@
   }
 }
 
-/**
- * Using the elevate system.
- * Automatic contrast adjustment.
- *
- * <element className="hover-elevate" />
- * <element className="active-elevate-2" />
- *
- * // Using the tailwind utility when a data attribute is "on"
- * <element className="toggle-elevate data-[state=on]:toggle-elevated" />
- * // Or manually controlling the toggle state
- * <element className="toggle-elevate toggle-elevated" />
- *
- * Elevation systems have to handle many states.
- * - not-hovered, vs. hovered vs. active  (three mutually exclusive states)
- * - toggled or not
- * - focused or not (this is not handled with these utilities)
- *
- * Even without handling focused or not, this is six possible combinations that
- * need to be distinguished from eachother visually.
- */
+/* ============================================================
+   ELEVATION SYSTEM
+   ============================================================ */
+
 @layer utilities {
-  /* Hide ugly search cancel button in Chrome until we can style it properly */
+  /* Hide ugly search cancel button in Chrome */
   input[type='search']::-webkit-search-cancel-button {
     @apply hidden;
   }
@@ -298,43 +387,34 @@
     pointer-events: none;
   }
 
-  /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of
-   * buttons/badges can remove the automatic brightness adjustment on interactions
-   * and program their own. */
+  /* Escape hatches */
   .no-default-hover-elevate {
   }
 
   .no-default-active-elevate {
   }
 
-  /**
-   * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
-   * This way they can stack/compound. Both will overlap the parent's borders!
-   * So borders will be automatically adjusted both on toggle, and hover/active,
-   * and they will be compounded.
-   */
+  /* Toggleable backgrounds */
   .toggle-elevate::before,
   .toggle-elevate-2::before {
     content: '';
     pointer-events: none;
     position: absolute;
     inset: 0px;
-    /*border-radius: inherit;   match rounded corners */
     border-radius: inherit;
     z-index: -1;
-    /* sits behind content but above backdrop */
   }
 
   .toggle-elevate.toggle-elevated::before {
     background-color: var(--elevate-2);
   }
 
-  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  /* If there is a 1px border, cover the border */
   .border.toggle-elevate::before {
     inset: -1px;
   }
 
-  /* Does not work on elements with overflow:hidden! */
+  /* Hover/active elevation */
   .hover-elevate:not(.no-default-hover-elevate),
   .active-elevate:not(.no-default-active-elevate),
   .hover-elevate-2:not(.no-default-hover-elevate),
@@ -351,10 +431,8 @@
     pointer-events: none;
     position: absolute;
     inset: 0px;
-    /*border-radius: inherit;   match rounded corners */
     border-radius: inherit;
     z-index: 999;
-    /* sits in front of content */
   }
 
   .hover-elevate:hover:not(.no-default-hover-elevate)::after,
@@ -367,7 +445,7 @@
     background-color: var(--elevate-2);
   }
 
-  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  /* Border adjustment */
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
   .border.active-elevate:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
@@ -377,38 +455,172 @@
   }
 }
 
+/* ============================================================
+   GLOBAL PAGE BEHAVIOR
+   ============================================================ */
+
 @layer base {
-  html { scroll-behavior: smooth; }
-  body { min-width: 320px; }
-  ::selection { background: hsl(var(--accent) / .24); color: hsl(var(--foreground)); }
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-width: 320px;
+  }
+
+  ::selection {
+    background: hsl(var(--accent) / 0.24);
+    color: hsl(var(--foreground));
+  }
 }
+
+/* ============================================================
+   PAHADI BWARI CUSTOM UTILITIES
+   ============================================================ */
 
 @layer utilities {
-  .font-display { font-family: var(--app-font-serif); }
-  .font-mono-ui { font-family: var(--app-font-mono); }
-  .eyebrow { font-family: var(--app-font-mono); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; }
+  .font-display {
+    font-family: var(--app-font-serif);
+  }
+
+  .font-mono-ui {
+    font-family: var(--app-font-mono);
+  }
+
+  .eyebrow {
+    font-family: var(--app-font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* Subtle Ivory/Slate Blue grid */
   .surface-grid {
-    background-image: linear-gradient(hsl(var(--primary) / .055) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / .055) 1px, transparent 1px);
+    background-image:
+      linear-gradient(
+        hsl(var(--primary) / 0.055) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        hsl(var(--primary) / 0.055) 1px,
+        transparent 1px
+      );
+
     background-size: 28px 28px;
   }
+
+  /* Subtle texture */
   .grain::after {
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .032;
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.032;
+
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
   }
+
+  /* Updated Pahadi atmosphere */
   .mountain-sky {
     background:
-      radial-gradient(ellipse at 72% 8%, hsl(42 90% 75% / .58), transparent 35%),
-      linear-gradient(155deg, hsl(187 47% 28%) 0%, hsl(190 39% 35%) 44%, hsl(42 52% 74%) 100%);
+      radial-gradient(
+        ellipse at 72% 8%,
+        hsl(40 82% 63% / 0.42),
+        transparent 35%
+      ),
+      linear-gradient(
+        155deg,
+        hsl(211 21% 49%) 0%,
+        hsl(211 22% 42%) 44%,
+        hsl(40 52% 76%) 100%
+      );
   }
-  .mountain-cut { clip-path: polygon(0 72%, 12% 59%, 24% 69%, 36% 37%, 46% 58%, 60% 25%, 72% 55%, 84% 41%, 100% 66%, 100% 100%, 0 100%); }
-  .page-enter { animation: page-enter .52s cubic-bezier(.2,.8,.2,1) both; }
-  .rise-1 { animation: rise .7s .08s cubic-bezier(.2,.8,.2,1) both; }
-  .rise-2 { animation: rise .7s .17s cubic-bezier(.2,.8,.2,1) both; }
-  .rise-3 { animation: rise .7s .26s cubic-bezier(.2,.8,.2,1) both; }
-  .hover-lift { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
-  .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 14px 34px hsl(195 28% 17% / .10); }
-  .focus-ring:focus-visible { outline: 3px solid hsl(var(--accent) / .42); outline-offset: 3px; }
+
+  .mountain-cut {
+    clip-path: polygon(
+      0 72%,
+      12% 59%,
+      24% 69%,
+      36% 37%,
+      46% 58%,
+      60% 25%,
+      72% 55%,
+      84% 41%,
+      100% 66%,
+      100% 100%,
+      0 100%
+    );
+  }
+
+  /* Page entrance */
+  .page-enter {
+    animation:
+      page-enter 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .rise-1 {
+    animation:
+      rise 0.7s 0.08s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .rise-2 {
+    animation:
+      rise 0.7s 0.17s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .rise-3 {
+    animation:
+      rise 0.7s 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  /* Card lift */
+  .hover-lift {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+      0 14px 34px hsl(24 4% 16% / 0.10);
+  }
+
+  /* Coral focus ring */
+  .focus-ring:focus-visible {
+    outline: 3px solid hsl(var(--accent) / 0.42);
+    outline-offset: 3px;
+  }
 }
 
-@keyframes page-enter { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

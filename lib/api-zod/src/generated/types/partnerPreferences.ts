@@ -20,11 +20,17 @@ export interface PartnerPreferences {
   /** @nullable */
   preferredDistrict: string | null;
   /** @nullable */
+  preferredReligion: string | null;
+  /** @nullable */
+  preferredCaste: string | null;
+  /** @nullable */
   preferredEducation: string | null;
   /** @nullable */
   preferredProfession: string | null;
   /** @nullable */
   preferredCommunity: string | null;
+  /** @nullable */
+  preferredIncomeRange: string | null;
   /** @nullable */
   preferredMaritalStatus: string | null;
   /** @nullable */

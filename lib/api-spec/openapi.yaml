@@ -1,28 +1,40 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
   description: API specification
+
 servers:
   - url: /api
     description: Base API path
+
 tags:
   - name: health
     description: Health operations
+
   - name: dashboard
     description: Authenticated dashboard summaries
+
   - name: profiles
     description: Profile discovery and profile management
+
+  - name: profileSetup
+    description: Multi-step profile onboarding
+
   - name: interests
     description: Expressing and managing interest
+
   - name: reports
     description: Profile safety reports
+
   - name: photos
     description: Profile photo management
+
   - name: admin
     description: Admin moderation tools
+
 paths:
+
   /healthz:
     get:
       operationId: healthCheck
@@ -36,6 +48,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+
   /dashboard:
     get:
       operationId: getDashboard
@@ -50,6 +64,73 @@ paths:
                 $ref: "#/components/schemas/DashboardSummary"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
+  /profile/setup:
+    get:
+      operationId: getProfileSetup
+      tags: [profileSetup]
+      summary: Get the current user's profile setup progress
+      description: >
+        Returns the user's onboarding progress, saved profile information,
+        partner preferences and photo status.
+      responses:
+        "200":
+          description: Profile setup state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileSetupState"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    put:
+      operationId: saveProfileSetupStep
+      tags: [profileSetup]
+      summary: Save one profile setup step
+      description: >
+        Saves one of the five profile information steps. Progress is persisted
+        so the user can leave and continue later.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileSetupStepInput"
+      responses:
+        "200":
+          description: Profile setup step saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileSetupStepResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+
+  /profile/setup/complete:
+    post:
+      operationId: completeProfileSetup
+      tags: [profileSetup]
+      summary: Complete profile onboarding
+      description: >
+        Marks the profile as complete after all five information steps
+        and a primary profile photo have been saved.
+      responses:
+        "200":
+          description: Profile setup completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileSetupCompleteResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+
   /profile/me:
     get:
       operationId: getMyProfile
@@ -64,6 +145,7 @@ paths:
                 $ref: "#/components/schemas/MyProfile"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
     put:
       operationId: updateMyProfile
       tags: [profiles]
@@ -85,6 +167,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
   /profile/visibility:
     put:
       operationId: updateProfileVisibility
@@ -105,6 +189,8 @@ paths:
                 $ref: "#/components/schemas/VisibilityResponse"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
   /profiles:
     get:
       operationId: listProfiles
@@ -113,39 +199,66 @@ paths:
       parameters:
         - $ref: "#/components/parameters/Page"
         - $ref: "#/components/parameters/PageSize"
+
         - in: query
           name: gender
-          schema: { type: string }
+          schema:
+            type: string
+
         - in: query
           name: ageMin
-          schema: { type: integer, minimum: 18 }
+          schema:
+            type: integer
+            minimum: 18
+
         - in: query
           name: ageMax
-          schema: { type: integer, minimum: 18 }
+          schema:
+            type: integer
+            minimum: 18
+
         - in: query
           name: heightMin
-          schema: { type: integer, minimum: 100 }
+          schema:
+            type: integer
+            minimum: 100
+
         - in: query
           name: heightMax
-          schema: { type: integer, minimum: 100 }
+          schema:
+            type: integer
+            minimum: 100
+
         - in: query
           name: location
-          schema: { type: string }
+          schema:
+            type: string
+
         - in: query
           name: district
-          schema: { type: string }
+          schema:
+            type: string
+
         - in: query
           name: education
-          schema: { type: string }
+          schema:
+            type: string
+
         - in: query
           name: profession
-          schema: { type: string }
+          schema:
+            type: string
+
         - in: query
           name: community
-          schema: { type: string }
+          schema:
+            type: string
+
         - in: query
           name: maritalStatus
-          schema: { type: string }
+          schema:
+            type: string
+
       responses:
         "200":
           description: Paginated public profiles
@@ -153,6 +266,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProfileList"
+
+
   /profiles/{id}:
     get:
       operationId: getProfile
@@ -169,6 +284,8 @@ paths:
                 $ref: "#/components/schemas/PublicProfile"
         "404":
           $ref: "#/components/responses/NotFound"
+
+
   /profiles/{id}/interest:
     post:
       operationId: expressInterest
@@ -191,6 +308,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+
   /interests:
     get:
       operationId: listInterests
@@ -205,6 +324,8 @@ paths:
                 $ref: "#/components/schemas/InterestList"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
   /interests/{id}:
     put:
       operationId: updateInterest
@@ -231,6 +352,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+
+
   /photos:
     post:
       operationId: uploadPhoto
@@ -253,6 +376,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
   /photos/{id}:
     delete:
       operationId: deletePhoto
@@ -267,6 +392,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+
     put:
       operationId: updatePhoto
       tags: [photos]
@@ -290,6 +416,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+
+
   /photos/complete:
     post:
       operationId: completePhotoUpload
@@ -312,6 +440,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
   /reports:
     post:
       operationId: createReport
@@ -334,6 +464,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
   /storage/uploads/request-url:
     post:
       operationId: requestUploadUrl
@@ -356,6 +488,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
   /admin/stats:
     get:
       operationId: getAdminStats
@@ -372,6 +506,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+
+
   /admin/reports:
     get:
       operationId: listAdminReports
@@ -391,57 +527,158 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+
+
+  /admin/reports/{id}:
+    patch:
+      operationId: updateAdminReport
+      tags: [admin]
+      summary: Update the moderation status of a profile report
+      parameters:
+        - $ref: "#/components/parameters/ReportId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminReportUpdate"
+      responses:
+        "200":
+          description: Updated report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+
+  /admin/users/{id}/status:
+    patch:
+      operationId: updateAdminUserStatus
+      tags: [admin]
+      summary: Activate or suspend a member account
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserStatusUpdate"
+      responses:
+        "200":
+          description: Updated user account status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserStatusResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+
 components:
+
   parameters:
+
     ProfileId:
       in: path
       name: id
       required: true
-      schema: { type: string }
+      schema:
+        type: string
+
     InterestId:
       in: path
       name: id
       required: true
-      schema: { type: string }
+      schema:
+        type: string
+
     PhotoId:
       in: path
       name: id
       required: true
-      schema: { type: string }
+      schema:
+        type: string
+
+    ReportId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+
+    UserId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+
     Page:
       in: query
       name: page
-      schema: { type: integer, minimum: 1, default: 1 }
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
     PageSize:
       in: query
       name: pageSize
-      schema: { type: integer, minimum: 1, maximum: 24, default: 12 }
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 24
+        default: 12
+
+
   responses:
+
     BadRequest:
       description: Invalid request
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+
     Unauthorized:
       description: Authentication required
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+
     Forbidden:
       description: Access denied
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+
     NotFound:
       description: Resource not found
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+
+
   schemas:
+
     HealthStatus:
       type: object
       properties:
@@ -449,257 +686,1313 @@ components:
           type: string
       required:
         - status
+
+
     Error:
       type: object
       properties:
         error:
           type: string
-      required: [error]
+      required:
+        - error
+
+
     DashboardSummary:
       type: object
       properties:
         profile:
           $ref: "#/components/schemas/MyProfile"
+
         sentInterests:
           type: integer
+
         receivedInterests:
           type: integer
+
         acceptedInterests:
           type: integer
+
         recentProfiles:
           type: array
           items:
             $ref: "#/components/schemas/PublicProfile"
-      required: [profile, sentInterests, receivedInterests, acceptedInterests, recentProfiles]
+
+      required:
+        - profile
+        - sentInterests
+        - receivedInterests
+        - acceptedInterests
+        - recentProfiles
+
+
     ProfileInput:
       type: object
+
       properties:
-        fullName: { type: string, minLength: 2 }
-        dateOfBirth: { type: string, format: date }
-        gender: { type: string }
-        height: { type: integer, minimum: 100, maximum: 240 }
-        maritalStatus: { type: string }
-        religion: { type: string }
-        community: { type: string }
-        motherTongue: { type: string }
-        state: { type: string }
-        district: { type: string }
-        currentCity: { type: string }
-        nativePlace: { type: string }
-        about: { type: string, maxLength: 1200 }
-        education: { type: string }
-        college: { type: string }
-        profession: { type: string }
-        jobTitle: { type: string }
-        company: { type: string }
-        workLocation: { type: string }
-        incomeRange: { type: string }
-        familyInformation: { type: string, maxLength: 1200 }
-        lifestyleInformation: { type: string, maxLength: 1200 }
-        hobbies: { type: string }
-        languages: { type: string }
-        foodPreferences: { type: string }
-        culturalInterests: { type: string }
-        familyValues: { type: string }
-        visibility: { type: string, enum: [public, private] }
-        preferredAgeMin: { type: integer, minimum: 18 }
-        preferredAgeMax: { type: integer, minimum: 18 }
-        preferredHeightMin: { type: integer, minimum: 100 }
-        preferredHeightMax: { type: integer, minimum: 100 }
-        preferredLocation: { type: string }
-        preferredDistrict: { type: string }
-        preferredEducation: { type: string }
-        preferredProfession: { type: string }
-        preferredCommunity: { type: string }
-        preferredMaritalStatus: { type: string }
-        preferredFamilyValues: { type: string }
-        otherPreferences: { type: string, maxLength: 1200 }
-      required: [fullName, dateOfBirth, gender]
+
+        fullName:
+          type: string
+          minLength: 2
+
+        dateOfBirth:
+          type: string
+          format: date
+
+        gender:
+          type: string
+
+        phone:
+          type: string
+
+        address:
+          type: string
+
+        height:
+          type: integer
+          minimum: 50
+          maximum: 250
+
+        maritalStatus:
+          type: string
+
+        religion:
+          type: string
+
+        community:
+          type: string
+
+        caste:
+          type: string
+
+        subCaste:
+          type: string
+
+        ethnicBackground:
+          type: string
+
+        motherTongue:
+          type: string
+
+        state:
+          type: string
+
+        district:
+          type: string
+
+        currentCity:
+          type: string
+
+        nativePlace:
+          type: string
+
+        about:
+          type: string
+          maxLength: 1200
+
+        education:
+          type: string
+
+        qualifications:
+          type: string
+
+        college:
+          type: string
+
+        profession:
+          type: string
+
+        jobTitle:
+          type: string
+
+        company:
+          type: string
+
+        workLocation:
+          type: string
+
+        employmentDetails:
+          type: string
+
+        incomeRange:
+          type: string
+
+        visaWorkStatus:
+          type: string
+
+        bodyType:
+          type: string
+
+        appearance:
+          type: string
+
+        lifestyleInformation:
+          type: string
+          maxLength: 1200
+
+        smoking:
+          type: string
+
+        drinking:
+          type: string
+
+        foodPreferences:
+          type: string
+
+        healthInformation:
+          type: string
+          maxLength: 1200
+
+        fatherOccupation:
+          type: string
+
+        fatherStatus:
+          type: string
+
+        motherOccupation:
+          type: string
+
+        motherStatus:
+          type: string
+
+        siblingsCount:
+          type: integer
+          minimum: 0
+
+        brothersCount:
+          type: integer
+          minimum: 0
+
+        sistersCount:
+          type: integer
+          minimum: 0
+
+        marriedSiblingsCount:
+          type: integer
+          minimum: 0
+
+        unmarriedSiblingsCount:
+          type: integer
+          minimum: 0
+
+        familyType:
+          type: string
+
+        familyInformation:
+          type: string
+          maxLength: 1200
+
+        hobbies:
+          type: string
+
+        languages:
+          type: string
+
+        culturalInterests:
+          type: string
+
+        familyValues:
+          type: string
+
+        visibility:
+          type: string
+          enum: [public, private]
+
+        preferredAgeMin:
+          type: integer
+          minimum: 18
+
+        preferredAgeMax:
+          type: integer
+          minimum: 18
+
+        preferredHeightMin:
+          type: integer
+          minimum: 50
+
+        preferredHeightMax:
+          type: integer
+          minimum: 50
+
+        preferredLocation:
+          type: string
+
+        preferredDistrict:
+          type: string
+
+        preferredReligion:
+          type: string
+
+        preferredCaste:
+          type: string
+
+        preferredEducation:
+          type: string
+
+        preferredProfession:
+          type: string
+
+        preferredCommunity:
+          type: string
+
+        preferredIncomeRange:
+          type: string
+
+        preferredMaritalStatus:
+          type: string
+
+        preferredFamilyValues:
+          type: string
+
+        otherPreferences:
+          type: string
+          maxLength: 1200
+
+      required:
+        - fullName
+        - dateOfBirth
+        - gender
+
+
     MyProfile:
       allOf:
+
         - $ref: "#/components/schemas/PublicProfile"
+
         - type: object
+
           properties:
-            email: { type: string, format: email }
-            visibility: { type: string, enum: [public, private] }
-            completion: { type: integer, minimum: 0, maximum: 100 }
+
+            email:
+              type: string
+              format: email
+
+            visibility:
+              type: string
+              enum: [public, private]
+
+            completion:
+              type: integer
+              minimum: 0
+              maximum: 100
+
+            dateOfBirth:
+              type: string
+              format: date
+
+            phone:
+              type: string
+
+            address:
+              type: string
+
+            religion:
+              type: string
+
+            community:
+              type: string
+
+            caste:
+              type: string
+
+            subCaste:
+              type: string
+
+            ethnicBackground:
+              type: string
+
+            motherTongue:
+              type: string
+
+            state:
+              type: string
+
+            currentCity:
+              type: string
+
+            district:
+              type: string
+
+            nativePlace:
+              type: string
+
+            qualifications:
+              type: string
+
+            college:
+              type: string
+
+            profession:
+              type: string
+
+            jobTitle:
+              type: string
+
+            company:
+              type: string
+
+            workLocation:
+              type: string
+
+            employmentDetails:
+              type: string
+
+            incomeRange:
+              type: string
+
+            visaWorkStatus:
+              type: string
+
+            bodyType:
+              type: string
+
+            appearance:
+              type: string
+
+            lifestyleInformation:
+              type: string
+              maxLength: 1200
+
+            smoking:
+              type: string
+
+            drinking:
+              type: string
+
+            foodPreferences:
+              type: string
+
+            healthInformation:
+              type: string
+              maxLength: 1200
+
+            fatherOccupation:
+              type: string
+
+            fatherStatus:
+              type: string
+
+            motherOccupation:
+              type: string
+
+            motherStatus:
+              type: string
+
+            siblingsCount:
+              type: integer
+              minimum: 0
+
+            brothersCount:
+              type: integer
+              minimum: 0
+
+            sistersCount:
+              type: integer
+              minimum: 0
+
+            marriedSiblingsCount:
+              type: integer
+              minimum: 0
+
+            unmarriedSiblingsCount:
+              type: integer
+              minimum: 0
+
+            familyType:
+              type: string
+
+            familyInformation:
+              type: string
+              maxLength: 1200
+
+            hobbies:
+              type: string
+
+            languages:
+              type: string
+
+            culturalInterests:
+              type: string
+
+            familyValues:
+              type: string
+
             preferences:
               $ref: "#/components/schemas/PartnerPreferences"
-          required: [email, visibility, completion, preferences]
+
+          required:
+            - email
+            - visibility
+            - completion
+            - preferences
+
+
     PublicProfile:
       type: object
+
       properties:
-        id: { type: string }
-        fullName: { type: string }
-        age: { type: integer }
-        gender: { type: string }
-        height: { type: integer }
-        city: { type: string }
-        district: { type: string }
-        nativePlace: { type: string }
-        education: { type: string }
-        profession: { type: string }
-        community: { type: string }
-        maritalStatus: { type: string }
-        about: { type: string }
-        familyValues: { type: string }
-        hobbies: { type: string }
-        languages: { type: string }
-        photoUrl: { type: ["string", "null"], format: uri }
+
+        id:
+          type: string
+
+        fullName:
+          type: string
+
+        age:
+          type: integer
+
+        gender:
+          type: string
+
+        height:
+          type: integer
+
+        city:
+          type: string
+
+        district:
+          type: string
+
+        nativePlace:
+          type: string
+
+        education:
+          type: string
+
+        profession:
+          type: string
+
+        community:
+          type: string
+
+        maritalStatus:
+          type: string
+
+        about:
+          type: string
+
+        familyValues:
+          type: string
+
+        hobbies:
+          type: string
+
+        languages:
+          type: string
+
+        photoUrl:
+          type: ["string", "null"]
+          format: uri
+
         photos:
           type: array
           items:
             $ref: "#/components/schemas/Photo"
-      required: [id, fullName, age, gender, city, education, profession, community, about, photoUrl, photos]
+
+      required:
+        - id
+        - fullName
+        - age
+        - gender
+        - city
+        - education
+        - profession
+        - community
+        - about
+        - photoUrl
+        - photos
+
+
     PartnerPreferences:
       type: object
+
       properties:
-        preferredAgeMin: { type: ["integer", "null"] }
-        preferredAgeMax: { type: ["integer", "null"] }
-        preferredHeightMin: { type: ["integer", "null"] }
-        preferredHeightMax: { type: ["integer", "null"] }
-        preferredLocation: { type: ["string", "null"] }
-        preferredDistrict: { type: ["string", "null"] }
-        preferredEducation: { type: ["string", "null"] }
-        preferredProfession: { type: ["string", "null"] }
-        preferredCommunity: { type: ["string", "null"] }
-        preferredMaritalStatus: { type: ["string", "null"] }
-        preferredFamilyValues: { type: ["string", "null"] }
-        otherPreferences: { type: ["string", "null"] }
-      required: [preferredAgeMin, preferredAgeMax, preferredHeightMin, preferredHeightMax, preferredLocation, preferredDistrict, preferredEducation, preferredProfession, preferredCommunity, preferredMaritalStatus, preferredFamilyValues, otherPreferences]
+
+        preferredAgeMin:
+          type: ["integer", "null"]
+
+        preferredAgeMax:
+          type: ["integer", "null"]
+
+        preferredHeightMin:
+          type: ["integer", "null"]
+
+        preferredHeightMax:
+          type: ["integer", "null"]
+
+        preferredLocation:
+          type: ["string", "null"]
+
+        preferredDistrict:
+          type: ["string", "null"]
+
+        preferredReligion:
+          type: ["string", "null"]
+
+        preferredCaste:
+          type: ["string", "null"]
+
+        preferredEducation:
+          type: ["string", "null"]
+
+        preferredProfession:
+          type: ["string", "null"]
+
+        preferredCommunity:
+          type: ["string", "null"]
+
+        preferredIncomeRange:
+          type: ["string", "null"]
+
+        preferredMaritalStatus:
+          type: ["string", "null"]
+
+        preferredFamilyValues:
+          type: ["string", "null"]
+
+        otherPreferences:
+          type: ["string", "null"]
+
+      required:
+        - preferredAgeMin
+        - preferredAgeMax
+        - preferredHeightMin
+        - preferredHeightMax
+        - preferredLocation
+        - preferredDistrict
+        - preferredReligion
+        - preferredCaste
+        - preferredEducation
+        - preferredProfession
+        - preferredCommunity
+        - preferredIncomeRange
+        - preferredMaritalStatus
+        - preferredFamilyValues
+        - otherPreferences
+
+
     ProfileList:
       type: object
+
       properties:
+
         items:
           type: array
           items:
             $ref: "#/components/schemas/PublicProfile"
-        page: { type: integer }
-        pageSize: { type: integer }
-        total: { type: integer }
-        totalPages: { type: integer }
-      required: [items, page, pageSize, total, totalPages]
+
+        page:
+          type: integer
+
+        pageSize:
+          type: integer
+
+        total:
+          type: integer
+
+        totalPages:
+          type: integer
+
+      required:
+        - items
+        - page
+        - pageSize
+        - total
+        - totalPages
+
+
+    ProfileSetupStepInput:
+      type: object
+
+      properties:
+
+        step:
+          type: integer
+          minimum: 1
+          maximum: 5
+
+        data:
+          type: object
+          additionalProperties: true
+
+      required:
+        - step
+        - data
+
+
+    ProfileSetupStepResponse:
+      type: object
+
+      properties:
+
+        success:
+          type: boolean
+
+        step:
+          type: integer
+
+        nextStep:
+          type: integer
+
+        profileSetupCompleted:
+          type: boolean
+
+      required:
+        - success
+        - step
+        - nextStep
+        - profileSetupCompleted
+
+
+    ProfileSetupState:
+      type: object
+
+      properties:
+
+        profileExists:
+          type: boolean
+
+        profileSetupCompleted:
+          type: boolean
+
+        currentStep:
+          type: integer
+
+        profile:
+          anyOf:
+            - $ref: "#/components/schemas/ProfileSetupProfile"
+            - type: "null"
+
+        preferences:
+          anyOf:
+            - $ref: "#/components/schemas/ProfileSetupPreferences"
+            - type: "null"
+
+        photoCount:
+          type: integer
+
+        hasPrimaryPhoto:
+          type: boolean
+
+      required:
+        - profileExists
+        - profileSetupCompleted
+        - currentStep
+        - profile
+        - preferences
+        - photoCount
+        - hasPrimaryPhoto
+
+
+    ProfileSetupProfile:
+      type: object
+
+      properties:
+
+        id:
+          type: string
+
+        fullName:
+          type: string
+
+        dateOfBirth:
+          type: string
+          format: date
+
+        age:
+          type: integer
+
+        gender:
+          type: string
+
+        phone:
+          type: ["string", "null"]
+
+        email:
+          type: string
+          format: email
+
+        address:
+          type: ["string", "null"]
+
+        currentCity:
+          type: ["string", "null"]
+
+        state:
+          type: ["string", "null"]
+
+        district:
+          type: ["string", "null"]
+
+        religion:
+          type: ["string", "null"]
+
+        community:
+          type: ["string", "null"]
+
+        caste:
+          type: ["string", "null"]
+
+        subCaste:
+          type: ["string", "null"]
+
+        ethnicBackground:
+          type: ["string", "null"]
+
+        motherTongue:
+          type: ["string", "null"]
+
+        languages:
+          type: ["string", "null"]
+
+        nativePlace:
+          type: ["string", "null"]
+
+        culturalInterests:
+          type: ["string", "null"]
+
+        education:
+          type: ["string", "null"]
+
+        qualifications:
+          type: ["string", "null"]
+
+        college:
+          type: ["string", "null"]
+
+        profession:
+          type: ["string", "null"]
+
+        jobTitle:
+          type: ["string", "null"]
+
+        company:
+          type: ["string", "null"]
+
+        workLocation:
+          type: ["string", "null"]
+
+        employmentDetails:
+          type: ["string", "null"]
+
+        incomeRange:
+          type: ["string", "null"]
+
+        visaWorkStatus:
+          type: ["string", "null"]
+
+        height:
+          type: ["integer", "null"]
+
+        bodyType:
+          type: ["string", "null"]
+
+        appearance:
+          type: ["string", "null"]
+
+        lifestyleInformation:
+          type: ["string", "null"]
+
+        smoking:
+          type: ["string", "null"]
+
+        drinking:
+          type: ["string", "null"]
+
+        foodPreferences:
+          type: ["string", "null"]
+
+        healthInformation:
+          type: ["string", "null"]
+
+        fatherOccupation:
+          type: ["string", "null"]
+
+        fatherStatus:
+          type: ["string", "null"]
+
+        motherOccupation:
+          type: ["string", "null"]
+
+        motherStatus:
+          type: ["string", "null"]
+
+        siblingsCount:
+          type: ["integer", "null"]
+
+        brothersCount:
+          type: ["integer", "null"]
+
+        sistersCount:
+          type: ["integer", "null"]
+
+        marriedSiblingsCount:
+          type: ["integer", "null"]
+
+        unmarriedSiblingsCount:
+          type: ["integer", "null"]
+
+        familyType:
+          type: ["string", "null"]
+
+        familyValues:
+          type: ["string", "null"]
+
+        familyInformation:
+          type: ["string", "null"]
+
+        maritalStatus:
+          type: ["string", "null"]
+
+        about:
+          type: ["string", "null"]
+
+        hobbies:
+          type: ["string", "null"]
+
+      required:
+        - id
+        - fullName
+        - dateOfBirth
+        - age
+        - gender
+        - email
+
+
+    ProfileSetupPreferences:
+      allOf:
+        - $ref: "#/components/schemas/PartnerPreferences"
+
+
+    ProfileSetupCompleteResponse:
+      type: object
+
+      properties:
+
+        success:
+          type: boolean
+
+        profileSetupCompleted:
+          type: boolean
+
+        profileCompletion:
+          type: integer
+          minimum: 0
+          maximum: 100
+
+        message:
+          type: string
+
+      required:
+        - success
+        - profileSetupCompleted
+        - profileCompletion
+        - message
+
+
     VisibilityInput:
       type: object
+
       properties:
-        visibility: { type: string, enum: [public, private] }
-      required: [visibility]
+
+        visibility:
+          type: string
+          enum: [public, private]
+
+      required:
+        - visibility
+
+
     VisibilityResponse:
       type: object
+
       properties:
-        visibility: { type: string, enum: [public, private] }
-      required: [visibility]
+
+        visibility:
+          type: string
+          enum: [public, private]
+
+      required:
+        - visibility
+
+
     Interest:
       type: object
+
       properties:
-        id: { type: string }
-        senderProfileId: { type: string }
-        receiverProfileId: { type: string }
-        senderName: { type: string }
-        receiverName: { type: string }
-        status: { type: string, enum: [pending, accepted, declined] }
-        createdAt: { type: string, format: date-time }
-      required: [id, senderProfileId, receiverProfileId, senderName, receiverName, status, createdAt]
+
+        id:
+          type: string
+
+        senderProfileId:
+          type: string
+
+        receiverProfileId:
+          type: string
+
+        senderName:
+          type: string
+
+        receiverName:
+          type: string
+
+        status:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - declined
+
+        createdAt:
+          type: string
+          format: date-time
+
+      required:
+        - id
+        - senderProfileId
+        - receiverProfileId
+        - senderName
+        - receiverName
+        - status
+        - createdAt
+
+
     InterestList:
       type: object
+
       properties:
+
         sent:
           type: array
-          items: { $ref: "#/components/schemas/Interest" }
+          items:
+            $ref: "#/components/schemas/Interest"
+
         received:
           type: array
-          items: { $ref: "#/components/schemas/Interest" }
-      required: [sent, received]
+          items:
+            $ref: "#/components/schemas/Interest"
+
+      required:
+        - sent
+        - received
+
+
     InterestUpdate:
       type: object
+
       properties:
-        status: { type: string, enum: [accepted, declined] }
-      required: [status]
+
+        status:
+          type: string
+          enum:
+            - accepted
+            - declined
+
+      required:
+        - status
+
+
     Photo:
       type: object
+
       properties:
-        id: { type: string }
-        url: { type: string, format: uri }
-        isPrimary: { type: boolean }
-        sortOrder: { type: integer }
-      required: [id, url, isPrimary, sortOrder]
+
+        id:
+          type: string
+
+        url:
+          type: string
+          format: uri
+
+        isPrimary:
+          type: boolean
+
+        sortOrder:
+          type: integer
+
+      required:
+        - id
+        - url
+        - isPrimary
+        - sortOrder
+
+
     PhotoUploadInput:
       type: object
+
       properties:
+
         file:
           type: string
           format: binary
-        isPrimary: { type: boolean }
-      required: [file]
+
+        isPrimary:
+          type: boolean
+
+      required:
+        - file
+
+
     PhotoUpdate:
       type: object
+
       properties:
-        isPrimary: { type: boolean }
-        sortOrder: { type: integer, minimum: 0 }
+
+        isPrimary:
+          type: boolean
+
+        sortOrder:
+          type: integer
+          minimum: 0
+
+
     PhotoCompleteInput:
       type: object
+
       properties:
-        objectPath: { type: string, minLength: 1 }
-        fileType: { type: string, enum: [image/jpeg, image/png] }
-        isPrimary: { type: boolean }
-      required: [objectPath, fileType]
+
+        objectPath:
+          type: string
+          minLength: 1
+
+        fileType:
+          type: string
+          enum:
+            - image/jpeg
+            - image/png
+
+        isPrimary:
+          type: boolean
+
+      required:
+        - objectPath
+        - fileType
+
+
     ReportInput:
       type: object
+
       properties:
-        reportedProfileId: { type: string }
+
+        reportedProfileId:
+          type: string
+
         reason:
           type: string
-          enum: [fake_profile, incorrect_information, inappropriate_content, suspicious_activity, harassment, other]
-        description: { type: string, maxLength: 1200 }
-      required: [reportedProfileId, reason]
+          enum:
+            - fake_profile
+            - incorrect_information
+            - inappropriate_content
+            - suspicious_activity
+            - harassment
+            - other
+
+        description:
+          type: string
+          maxLength: 1200
+
+      required:
+        - reportedProfileId
+        - reason
+
+
     Report:
       type: object
+
       properties:
-        id: { type: string }
-        reportedProfileId: { type: string }
-        reason: { type: string }
-        description: { type: ["string", "null"] }
-        status: { type: string, enum: [open, reviewed, dismissed] }
-        createdAt: { type: string, format: date-time }
-      required: [id, reportedProfileId, reason, description, status, createdAt]
+
+        id:
+          type: string
+
+        reportedProfileId:
+          type: string
+
+        reason:
+          type: string
+
+        description:
+          type: ["string", "null"]
+
+        status:
+          type: string
+          enum:
+            - open
+            - reviewed
+            - dismissed
+            - actioned
+
+        createdAt:
+          type: string
+          format: date-time
+
+      required:
+        - id
+        - reportedProfileId
+        - reason
+        - description
+        - status
+        - createdAt
+
+
+    AdminReportUpdate:
+      type: object
+
+      properties:
+
+        status:
+          type: string
+          enum:
+            - open
+            - reviewed
+            - dismissed
+            - actioned
+
+      required:
+        - status
+
+
+    AdminUserStatusUpdate:
+      type: object
+
+      properties:
+
+        status:
+          type: string
+          enum:
+            - active
+            - suspended
+
+      required:
+        - status
+
+
+    AdminUserStatusResponse:
+      type: object
+
+      properties:
+
+        id:
+          type: string
+
+        status:
+          type: string
+          enum:
+            - active
+            - suspended
+
+      required:
+        - id
+        - status
+
+
     AdminReportList:
       type: object
+
       properties:
+
         items:
           type: array
-          items: { $ref: "#/components/schemas/Report" }
-        page: { type: integer }
-        pageSize: { type: integer }
-        total: { type: integer }
-      required: [items, page, pageSize, total]
+          items:
+            $ref: "#/components/schemas/Report"
+
+        page:
+          type: integer
+
+        pageSize:
+          type: integer
+
+        total:
+          type: integer
+
+      required:
+        - items
+        - pageSize
+        - total
+
+
     AdminStats:
       type: object
+
       properties:
-        totalUsers: { type: integer }
-        publicProfiles: { type: integer }
-        pendingReports: { type: integer }
-        interestsSent: { type: integer }
-      required: [totalUsers, publicProfiles, pendingReports, interestsSent]
+
+        totalUsers:
+          type: integer
+
+        publicProfiles:
+          type: integer
+
+        pendingReports:
+          type: integer
+
+        interestsSent:
+          type: integer
+
+      required:
+        - totalUsers
+        - publicProfiles
+        - pendingReports
+        - interestsSent
+
+
     UploadUrlInput:
       type: object
+
       properties:
-        name: { type: string }
-        size: { type: integer, minimum: 1 }
-        contentType: { type: string, enum: [image/jpeg, image/png] }
-      required: [name, size, contentType]
+
+        name:
+          type: string
+
+        size:
+          type: integer
+          minimum: 1
+
+        contentType:
+          type: string
+          enum:
+            - image/jpeg
+            - image/png
+
+      required:
+        - name
+        - size
+        - contentType
+
+
     UploadUrlResponse:
       type: object
+
       properties:
-        uploadURL: { type: string, format: uri }
-        objectPath: { type: string }
+
+        uploadURL:
+          type: string
+          format: uri
+
+        objectPath:
+          type: string
+
         metadata:
           $ref: "#/components/schemas/UploadMetadata"
-      required: [uploadURL, objectPath, metadata]
+
+      required:
+        - uploadURL
+        - objectPath
+        - metadata
+
+
     UploadMetadata:
       type: object
-      properties:
-        name: { type: string }
-        size: { type: integer }
-        contentType: { type: string }
-      required: [name, size, contentType]
 
+      properties:
+
+        name:
+          type: string
+
+        size:
+          type: integer
+
+        contentType:
+          type: string
+
+      required:
+        - name
+        - size
+        - contentType

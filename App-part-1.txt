@@ -1,0 +1,1000 @@
+import { createPortal } from 'react-dom';
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ClerkProvider, Show, SignIn as ClerkSignIn, SignUp as ClerkSignUp, useAuth, useClerk } from '@clerk/react';
+import { shadcn } from '@clerk/themes';
+import { Link, Redirect, Route, Router as WouterRouter, Switch, useLocation, useParams } from 'wouter';
+import {
+  ArrowRight,
+  BadgeCheck,
+  BarChart3,
+  Bell,
+  BriefcaseBusiness,
+  Camera,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  CircleAlert,
+  Compass,
+  Eye,
+  FileText,
+  Flag,
+  GraduationCap,
+  Heart,
+  ImagePlus,
+  LockKeyhole,
+  LogOut,
+  MapPin,
+  Menu,
+  Pencil,
+  PhoneCall,
+  Plus,
+  Search,
+  Settings2,
+  ShieldCheck,
+  Sparkles,
+  Trash2,
+  UserRound,
+  X,
+} from 'lucide-react';
+import {
+  getGetAdminStatsQueryKey, getGetDashboardQueryKey, getGetMyProfileQueryKey,
+  getGetProfileQueryKey, getHealthCheckQueryKey, getListAdminReportsQueryKey,
+  getListInterestsQueryKey, getListProfilesQueryKey, useCreateReport, useDeletePhoto,
+  useExpressInterest, useGetAdminStats, useGetDashboard, useGetMyProfile, useGetProfile,
+  useCompletePhotoUpload, useHealthCheck, useListAdminReports, useListInterests, useListProfiles,
+  useRequestUploadUrl, useUpdateInterest, useUpdateMyProfile, useUpdatePhoto,
+  useUpdateProfileVisibility, useUploadPhoto,
+  ReportInputReason, InterestUpdateStatus, type ProfileInput, type PublicProfile,
+  setAuthTokenGetter,
+} from '@workspace/api-client-react';
+import { ErrorBoundary } from '@/components/error-boundary';
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import ProfilePhotoSetup from "./pages/ProfilePhotoSetup";
+import image2 from "./images/2.jpg";
+import hero from "./images/hero.jpg";
+import image3 from "./images/3.jpg";
+import image4 from "./images/4.jpg";
+import image5 from "./images/5.jpg";
+import last from "./images/last.avif"
+import ProfileSetup from "./pages/ProfileSetup";
+
+function ClerkApiAuthBridge() {
+  const { getToken, isLoaded, isSignedIn } = useAuth();
+
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) {
+      setAuthTokenGetter(null);
+      return;
+    }
+
+    setAuthTokenGetter(async () => {
+      const token = await getToken();
+
+      console.log(
+        "[AUTH BRIDGE] Token available:",
+        Boolean(token),
+      );
+
+      return token;
+    });
+
+    return () => {
+      setAuthTokenGetter(null);
+    };
+  }, [getToken, isLoaded, isSignedIn]);
+
+  return null;
+} const queryClient = new QueryClient();
+
+function initials(name = '') {
+  return (
+    name
+      .split(' ')
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase() || 'PB'
+  );
+}
+
+function errorText(error: unknown) {
+  if (error && typeof error === 'object' && 'error' in error) {
+    return String((error as { error?: string }).error);
+  }
+
+  return 'Something went wrong. Please try again in a moment.';
+}
+
+function Logo({ compact = false }: { compact?: boolean }) {
+  return (
+    <Link
+      href="/"
+      className="group flex items-center gap-3 focus-ring"
+      data-testid="link-logo"
+    >
+      <span className="grid size-10 place-items-center rounded-xl bg-[#8f1731] text-white shadow-sm">
+        <span className="font-display text-[23px] leading-none">प</span>
+      </span>
+
+      {!compact && (
+        <span className="leading-tight">
+          <strong className="block text-[15px] tracking-tight text-[#641126]">
+            पहाड़ी ब्वारी
+          </strong>
+
+          <span className="font-mono-ui text-[9px] uppercase tracking-[.19em] text-muted-foreground">
+            Pahadi Bwari
+          </span>
+        </span>
+      )}
+    </Link>
+  );
+}
+
+function Button({
+  children,
+  variant = 'primary',
+  className = '',
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'quiet' | 'outline' | 'danger';
+}) {
+  const variants = {
+    primary:
+      'bg-[#8f1731] text-white shadow-sm hover:bg-[#741229]',
+    quiet:
+      'bg-secondary text-secondary-foreground hover:bg-secondary/75',
+    outline:
+      'border border-border bg-card text-foreground hover:border-[#8f1731]/40 hover:bg-secondary/40',
+    danger:
+      'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+  };
+
+  return (
+    <button
+      className={`focus-ring inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TextInput({
+  label,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+  label?: string;
+}) {
+  return (
+    <label className="block space-y-1.5">
+      {label && (
+        <span className="text-xs font-semibold text-muted-foreground">
+          {label}
+        </span>
+      )}
+
+      <input
+        className="focus-ring h-11 w-full rounded-xl border border-input bg-background/70 px-3.5 text-sm outline-none transition focus:border-[#8f1731]"
+        {...props}
+      />
+    </label>
+  );
+}
+
+function SelectInput({
+  label,
+  children,
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & {
+  label?: string;
+}) {
+  return (
+    <label className="block space-y-1.5">
+      {label && (
+        <span className="text-xs font-semibold text-muted-foreground">
+          {label}
+        </span>
+      )}
+
+      <select
+        className="focus-ring h-11 w-full rounded-xl border border-input bg-background/70 px-3.5 text-sm outline-none transition focus:border-[#8f1731]"
+        {...props}
+      >
+        {children}
+      </select>
+    </label>
+  );
+}
+
+function TextArea({
+  label,
+  ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  label?: string;
+}) {
+  return (
+    <label className="block space-y-1.5">
+      {label && (
+        <span className="text-xs font-semibold text-muted-foreground">
+          {label}
+        </span>
+      )}
+
+      <textarea
+        className="focus-ring min-h-28 w-full resize-y rounded-xl border border-input bg-background/70 px-3.5 py-3 text-sm outline-none transition focus:border-[#8f1731]"
+        {...props}
+      />
+    </label>
+  );
+}
+
+function Toast({
+  message,
+  tone = 'success',
+  onClose,
+}: {
+  message: string;
+  tone?: 'success' | 'error';
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const timer = window.setTimeout(onClose, 4200);
+
+    return () => window.clearTimeout(timer);
+  }, [message, onClose]);
+
+  return (
+    <div
+      className={`fixed bottom-5 right-5 z-40 flex max-w-sm items-center gap-3 rounded-2xl border bg-card px-4 py-3 text-sm shadow-xl ${tone === 'success'
+          ? 'border-[#8f1731]/20'
+          : 'border-destructive/30'
+        }`}
+      role="status"
+      data-testid="status-toast"
+    >
+      <span
+        className={`grid size-7 place-items-center rounded-full ${tone === 'success'
+            ? 'bg-[#8f1731]/10 text-[#8f1731]'
+            : 'bg-destructive/10 text-destructive'
+          }`}
+      >
+        {tone === 'success' ? (
+          <Check size={15} />
+        ) : (
+          <CircleAlert size={15} />
+        )}
+      </span>
+
+      <span>{message}</span>
+
+      <button
+        onClick={onClose}
+        aria-label="Close notification"
+        data-testid="button-close-toast"
+      >
+        <X size={15} />
+      </button>
+    </div>
+  );
+}
+
+function Skeleton({ className = '' }: { className?: string }) {
+  return (
+    <div
+      className={`animate-pulse rounded-xl bg-secondary ${className}`}
+    />
+  );
+}
+
+/* =========================================================
+   PUBLIC WEBSITE
+   ========================================================= */
+function PublicHeader() {
+  const { isSignedIn } = useAuth();
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur-xl">
+      <div className="mx-auto flex h-[76px] max-w-[1440px] items-center justify-between px-5 lg:px-10">
+        <Logo />
+
+        <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
+          <Link
+            href="/about"
+            className="transition hover:text-primary"
+            data-testid="link-about"
+          >
+            About
+          </Link>
+
+          <Link
+            href="/how-it-works"
+            className="transition hover:text-primary"
+            data-testid="link-how-it-works"
+          >
+            How it works
+          </Link>
+
+          <Link
+            href="/safety"
+            className="transition hover:text-primary"
+            data-testid="link-safety"
+          >
+            Safety
+          </Link>
+
+          <a
+            href="#featured"
+            className="transition hover:text-primary"
+          >
+            Featured
+          </a>
+        </nav>
+
+        <div className="flex items-center gap-2">
+          {isSignedIn ? (
+            <Link
+              href="/dashboard"
+              className="focus-ring inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-primary/90"
+              data-testid="link-dashboard-header"
+            >
+              Dashboard
+              <ArrowRight size={16} />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="focus-ring hidden min-h-11 items-center rounded-xl px-4 text-sm font-semibold hover:bg-secondary sm:inline-flex"
+                data-testid="link-sign-in-header"
+              >
+                Sign in
+              </Link>
+
+              <Link
+                href="/sign-up"
+                className="focus-ring inline-flex min-h-11 items-center rounded-xl bg-red-600 px-5 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-red-700"
+                data-testid="link-sign-up-header"
+              >
+                Free Registration
+              </Link>
+
+            </>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+
+function Footer() {
+  return (
+    <footer className="border-t border-black/10 bg-[#171313] text-white">
+      <div className="mx-auto grid max-w-[1440px] gap-12 px-5 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-10">
+
+        <div>
+          <Logo />
+
+          <p className="mt-6 max-w-sm text-sm leading-7 text-white/60">
+            A modern matrimonial platform for adults around the world
+            looking for meaningful introductions, genuine connections,
+            and a thoughtful path toward marriage.
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/40">
+            Discover
+          </p>
+
+          <div className="mt-5 grid gap-3 text-sm text-white/70">
+            <Link href="/about" className="hover:text-white">
+              About us
+            </Link>
+
+            <Link href="/how-it-works" className="hover:text-white">
+              How it works
+            </Link>
+
+            <Link href="/safety" className="hover:text-white">
+              Safety
+            </Link>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/40">
+            Account
+          </p>
+
+          <div className="mt-5 grid gap-3 text-sm text-white/70">
+            <Link href="/sign-up" className="hover:text-white">
+              Create profile
+            </Link>
+
+            <Link href="/sign-in" className="hover:text-white">
+              Sign in
+            </Link>
+
+            <Link href="/contact" className="hover:text-white">
+              Contact
+            </Link>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/40">
+            Privacy
+          </p>
+
+          <div className="mt-5 grid gap-3 text-sm text-white/70">
+            <Link href="/privacy-policy" className="hover:text-white">
+              Privacy policy
+            </Link>
+
+            <Link href="/terms" className="hover:text-white">
+              Terms
+            </Link>
+
+            <Link href="/safety" className="hover:text-white">
+              Safety guidelines
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10 px-5 py-6 text-center text-xs text-white/40">
+        © 2025 Pahadi Bwari · Built for meaningful connections worldwide
+      </div>
+    </footer>
+  );
+}
+
+
+function PublicLayout({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-[100dvh] bg-[#fffaf8] text-[#201717]">
+      <PublicHeader />
+      {children}
+      <Footer />
+    </div>
+  );
+}
+
+
+function MountainScene() {
+  return (
+    <div className="relative min-h-[500px] overflow-hidden rounded-[2rem]">
+      <img
+        src={image5}
+        alt="Indian wedding couple"
+        className="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+      <div className="absolute bottom-7 left-7 right-7 text-white">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">
+          Meaningful introductions
+        </p>
+
+        <p className="mt-2 font-display text-3xl italic">
+          Where two stories begin.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+
+function Home() {
+  const health = useHealthCheck({
+    query: {
+      queryKey: getHealthCheckQueryKey(),
+    },
+  });
+
+  return (
+    <PublicLayout>
+      <main>
+
+        {/* =========================================================
+            HERO
+        ========================================================== */}
+
+        <section className="relative min-h-[calc(100vh-76px)] overflow-hidden bg-[#5f1018]">
+
+          <img src={hero} alt="Pahadi Bwari"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+            fetchPriority="high"
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/10" />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+
+          <div className="relative mx-auto flex min-h-[calc(100vh-76px)] max-w-[1440px] items-end px-5 pb-12 pt-20 lg:px-10 lg:pb-20">
+
+            <div className="max-w-3xl text-white">
+
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/20 px-4 py-2 text-xs font-semibold backdrop-blur-md">
+                <span className="size-2 rounded-full bg-red-400" />
+                A modern matrimonial platform
+              </div>
+
+              <h1 className="font-display text-[clamp(3.5rem,8vw,7.5rem)] leading-[0.88] tracking-[-0.045em]">
+                Find someone
+                <br />
+                <em className="text-[#ffb1a7]">
+                  forever connection
+                </em>
+              </h1>
+
+              <p className="mt-7 max-w-2xl text-base leading-7 text-white/80 md:text-xl md:leading-8">
+                Meet genuine people, discover meaningful profiles,
+                and take your time getting to know someone who shares
+                your values.
+              </p>
+
+              <div className="mt-9 flex flex-wrap gap-3">
+
+                <Link
+                  href="/sign-up"
+                  className="focus-ring inline-flex min-h-13 items-center gap-3 rounded-xl bg-[#c92835] px-6 text-sm font-bold text-white shadow-xl transition hover:bg-[#b51f2b]"
+                  data-testid="link-hero-join"
+                >
+                  Create your profile
+                  <ArrowRight size={18} />
+                </Link>
+
+                <a
+                  href="#discover"
+                  className="focus-ring inline-flex min-h-13 items-center rounded-xl border border-white/30 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/20"
+                >
+                  Explore Pahadi Bwari
+                </a>
+
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-5 text-xs text-white/70">
+                <span className="flex items-center gap-2">
+                  <ShieldCheck size={16} />
+                  Privacy focused
+                </span>
+
+                <span className="flex items-center gap-2">
+                  <BadgeCheck size={16} />
+                  Genuine profiles
+                </span>
+
+                <span className="flex items-center gap-2">
+                  <LockKeyhole size={16} />
+                  Contact details protected
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+
+        {/* =========================================================
+            SEARCH / DISCOVER
+        ========================================================== */}
+
+        <section
+          id="discover"
+          className="relative z-10 mx-auto -mt-10 max-w-6xl px-5"
+        >
+          <div className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-2xl md:p-7">
+
+            <div className="mb-5">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                Start discovering
+              </p>
+
+              <h2 className="mt-2 font-display text-3xl text-[#211719] md:text-4xl">
+                Who would you like to meet?
+              </h2>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-4">
+
+              <div className="rounded-xl border border-black/10 bg-[#fffaf8] px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-black/40">
+                  Looking for
+                </p>
+
+                <p className="mt-1 text-sm font-semibold">
+                  A life partner
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-black/10 bg-[#fffaf8] px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-black/40">
+                  Location
+                </p>
+
+                <p className="mt-1 text-sm font-semibold">
+                  Anywhere
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-black/10 bg-[#fffaf8] px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-black/40">
+                  Age
+                </p>
+
+                <p className="mt-1 text-sm font-semibold">
+                  21 – 35
+                </p>
+              </div>
+
+              <Link
+                href="/sign-up"
+                className="flex min-h-[58px] items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
+              >
+                Start exploring
+                <Search size={17} />
+              </Link>
+
+            </div>
+
+            <p className="mt-4 text-xs text-black/45">
+              You can use detailed filters after creating your profile.
+            </p>
+
+          </div>
+        </section>
+
+
+        {/* =========================================================
+            TRUST BAR
+        ========================================================== */}
+
+        <section className="border-b border-black/10 bg-white">
+          <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:grid-cols-3 lg:px-10">
+
+            <div className="flex items-center gap-4">
+              <div className="grid size-12 shrink-0 place-items-center rounded-full bg-red-50 text-primary">
+                <ShieldCheck size={22} />
+              </div>
+
+              <div>
+                <p className="font-bold">Privacy first</p>
+                <p className="mt-1 text-sm text-black/55">
+                  Your contact details stay protected.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="grid size-12 shrink-0 place-items-center rounded-full bg-red-50 text-primary">
+                <BadgeCheck size={22} />
+              </div>
+
+              <div>
+                <p className="font-bold">Meaningful profiles</p>
+                <p className="mt-1 text-sm text-black/55">
+                  Learn about people before connecting.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="grid size-12 shrink-0 place-items-center rounded-full bg-red-50 text-primary">
+                <Heart size={22} />
+              </div>
+
+              <div>
+                <p className="font-bold">Your pace</p>
+                <p className="mt-1 text-sm text-black/55">
+                  Take your time with every introduction.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+
+        {/* =========================================================
+            INTRODUCTION
+        ========================================================== */}
+
+        <section className="mx-auto max-w-7xl px-5 py-24 lg:px-10">
+
+          <div className="grid gap-14 lg:grid-cols-[1fr_1.05fr] lg:items-center">
+
+            <div className="overflow-hidden rounded-[2rem]">
+
+              <img
+                src={image5}
+                alt="Happy couple in traditional wedding clothing"
+                className="h-[560px] w-full object-cover transition duration-700 hover:scale-[1.02]"
+                loading="lazy"
+              />
+
+            </div>
+
+            <div>
+
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                More than a profile
+              </p>
+
+              <h2 className="mt-5 font-display text-5xl leading-[0.95] tracking-tight text-[#27191b] md:text-7xl">
+                Get to know
+                <br />
+                the person
+                <br />
+                <em className="text-primary">
+                  behind the profile.
+                </em>
+              </h2>
+
+              <p className="mt-8 max-w-xl text-lg leading-8 text-black/60">
+                A good introduction is about more than a photograph.
+                Discover someone's education, work, location, interests,
+                family context, and what they are looking for.
+              </p>
+
+              <div className="mt-9 grid gap-4 sm:grid-cols-2">
+
+                <div className="rounded-2xl border border-black/10 bg-white p-5">
+                  <Compass className="text-primary" size={22} />
+
+                  <h3 className="mt-4 font-bold">
+                    Detailed discovery
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-black/55">
+                    Find profiles using meaningful filters rather than
+                    endless random scrolling.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-black/10 bg-white p-5">
+                  <LockKeyhole className="text-primary" size={22} />
+
+                  <h3 className="mt-4 font-bold">
+                    Private by design
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-black/55">
+                    Important personal contact information stays protected.
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =========================================================
+            HOW IT WORKS
+        ========================================================== */}
+
+        <section className="bg-[#f5e9e6] px-5 py-24 lg:px-10">
+
+          <div className="mx-auto max-w-7xl">
+
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                How it works
+              </p>
+
+              <h2 className="mt-4 font-display text-5xl leading-none text-[#27191b] md:text-7xl">
+                Simple.
+                <br />
+                <em>Thoughtful.</em>
+                <br />
+                Human.
+              </h2>
+            </div>
+
+            <div className="mt-14 grid gap-5 md:grid-cols-3">
+
+              <Feature
+                number="01"
+                icon={<UserRound size={22} />}
+                title="Create your profile"
+                body="Tell people about yourself, your interests, your work, your background, and what you are looking for."
+              />
+
+              <Feature
+                number="02"
+                icon={<Search size={22} />}
+                title="Discover people"
+                body="Explore profiles using age, location, education, profession, community, and other available filters."
+              />
+
+              <Feature
+                number="03"
+                icon={<Heart size={22} />}
+                title="Make an introduction"
+                body="Send an interest when you find someone you genuinely want to know better."
+              />
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =========================================================
+            FEATURED PEOPLE VISUAL
+        ========================================================== */}
+
+        <section
+          id="featured"
+          className="mx-auto max-w-7xl px-5 py-24 lg:px-10"
+        >
+
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                People & stories
+              </p>
+
+              <h2 className="mt-4 font-display text-5xl leading-none text-[#27191b] md:text-6xl">
+                Everyone has
+                <br />
+                <em>a story.</em>
+              </h2>
+            </div>
+
+            <p className="max-w-md text-sm leading-7 text-black/55">
+              Your future should not be reduced to a swipe.
+              Take a closer look at the people and stories behind
+              every introduction.
+            </p>
+
+          </div>
+
+
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+
+            <div className="group overflow-hidden rounded-[1.7rem] bg-black">
+              <div className="relative h-[500px]">
+                <img
+                  src={image2} alt="Pahadi Bwari"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+
+                <div className="absolute bottom-6 left-6 text-white">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-white/65">
+                    Meaningful
+                  </p>
+
+                  <p className="mt-1 font-display text-3xl">
+                    Connections
+                  </p>
+                </div>
+              </div>
+            </div>
+
+
+            <div className="group overflow-hidden rounded-[1.7rem] bg-black">
+              <div className="relative h-[500px]">
+                <img
+                  src={image3}
+                  alt="Couple smiling outdoors"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+
+                <div className="absolute bottom-6 left-6 text-white">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-white/65">
+                    Genuine
+                  </p>
+
+                  <p className="mt-1 font-display text-3xl">
+                    Introductions
+                  </p>
+                </div>
+              </div>
+            </div>
+
+
+            <div className="flex min-h-[500px] flex-col justify-between rounded-[1.7rem] bg-primary p-8 text-white">
+
+              <div>
+                <Heart size={30} />
+
+                <p className="mt-8 font-display text-4xl leading-tight">
+                  Your story
+                  <br />
+                  deserves
+                  <br />
+                  <em>a beginning.</em>
+                </p>
+              </div>
+
+              <Link
+                href="/sign-up"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-5 text-sm font-bold text-primary transition hover:bg-white/90"
+              >
+                Create your profile
+                <ArrowRight size={17} />
+              </Link>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =========================================================
+            WORLDWIDE
+        ========================================================== */}
+
+        <section className="bg-[#171313] px-5 py-24 text-white lg:px-10">
+
+          <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1fr_1fr] lg:items-center">
+
+            <div>
+
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#ff9e94]">
+                Wherever life takes you
+              </p>
+
+              <h2 className="mt-5 font-display text-5xl leading-[0.95] md:text-7xl">
+                From your
+                <br />
+                hometown
+                <br />
+                <em>to anywhere.</em>
+              </h2>
+
+              <p className="mt-8 max-w-xl text-lg leading-8 text-white/60">
+                Your roots can stay important even when your life takes
+                you somewhere completely different. Pahadi Bwari is
+                designed for people living in India and around the world.
+              </p>
+
+              <div className="mt-9 flex flex-wrap gap-3">
+                {['India', 'USA', 'Canada', 'UK', 'Australia', 'UAE', 'Worldwide'].map(
+                  (place) => (
+                    <span
+                      key={place}
+                      className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-white/70"
+                    >
+                      {place}
+                    </span>
+                  ),
+                )}
+              </div>
+
+            </div>
+
+
+            <div className="relative overflow-hidden rounded-[2rem]">
+
+              <img
+                src={image4}
+                alt="Couple enjoying an outdoor moment"
+                className="h-[580px] w-full object-cover"
+                loading="lazy"
+              />
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+              <div className="absolute bottom-7 left-7">
+                <p className="font-display text-3xl italic">

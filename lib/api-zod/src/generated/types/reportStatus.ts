@@ -13,4 +13,5 @@ export const ReportStatus = {
   open: 'open',
   reviewed: 'reviewed',
   dismissed: 'dismissed',
+  actioned: 'actioned',
 } as const;

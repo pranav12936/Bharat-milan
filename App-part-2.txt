@@ -1,0 +1,1000 @@
+                  Wherever you are,
+                </p>
+
+                <p className="mt-1 text-sm text-white/70">
+                  your story still has roots.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =========================================================
+            PRIVACY
+        ========================================================== */}
+
+        <section className="mx-auto max-w-7xl px-5 py-24 lg:px-10">
+
+          <div className="rounded-[2rem] border border-black/10 bg-white p-7 md:p-12">
+
+            <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
+
+              <div>
+                <div className="grid size-14 place-items-center rounded-2xl bg-red-50 text-primary">
+                  <ShieldCheck size={27} />
+                </div>
+
+                <h2 className="mt-6 font-display text-5xl leading-none text-[#27191b]">
+                  Your privacy
+                  <br />
+                  <em>comes first.</em>
+                </h2>
+              </div>
+
+              <div className="grid gap-7 sm:grid-cols-2">
+
+                <div>
+                  <h3 className="font-bold">
+                    Contact information protected
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-7 text-black/55">
+                    Your private contact details aren't displayed on
+                    public profile pages.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold">
+                    You control visibility
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-7 text-black/55">
+                    Your profile visibility can be changed through
+                    your privacy settings.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold">
+                    Report suspicious profiles
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-7 text-black/55">
+                    If something doesn't feel right, you can report
+                    a profile for moderation.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold">
+                    Take your time
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-7 text-black/55">
+                    There is no need to rush a conversation or
+                    share personal information early.
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =========================================================
+            FINAL CTA
+        ========================================================== */}
+
+        <section className="relative min-h-[620px] overflow-hidden bg-primary">
+
+          <img
+            src={last}
+            alt="Couple celebrating together"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+            loading="lazy"
+          />
+
+          <div className="absolute inset-0 bg-primary/75 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-primary/30 to-transparent" />
+
+          <div className="relative mx-auto flex min-h-[620px] max-w-7xl items-end px-5 pb-16 lg:px-10">
+
+            <div className="max-w-3xl text-white">
+
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/65">
+                Your next chapter
+              </p>
+
+              <h2 className="mt-5 font-display text-6xl leading-[0.88] md:text-8xl">
+                Maybe your
+                <br />
+                story starts
+                <br />
+                <em>here.</em>
+              </h2>
+
+              <p className="mt-7 max-w-xl text-lg leading-8 text-white/75">
+                Create your profile, discover meaningful people,
+                and take the first step when you are ready.
+              </p>
+
+              <Link
+                href="/sign-up"
+                className="focus-ring mt-8 inline-flex min-h-13 items-center gap-3 rounded-xl bg-white px-6 text-sm font-bold text-primary shadow-xl transition hover:bg-white/90"
+                data-testid="link-final-join"
+              >
+                Create your profile
+                <ArrowRight size={18} />
+              </Link>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =========================================================
+            HEALTH STATUS
+        ========================================================== */}
+
+        <div className="mx-auto max-w-7xl px-5 py-5 text-center text-[10px] font-medium uppercase tracking-[0.15em] text-black/35 lg:px-10">
+          {health.isLoading
+            ? 'Preparing your welcome'
+            : health.isError
+              ? 'Welcome desk is temporarily unavailable'
+              : 'Pahadi Bwari is ready to welcome you'}
+        </div>
+
+      </main>
+    </PublicLayout>
+  );
+}
+
+
+function Feature({
+  number,
+  icon,
+  title,
+  body,
+}: {
+  number: string;
+  icon: ReactNode;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="group rounded-[1.5rem] border border-black/10 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+
+      <div className="flex items-center justify-between">
+        <div className="grid size-12 place-items-center rounded-xl bg-red-50 text-primary">
+          {icon}
+        </div>
+
+        <span className="font-mono-ui text-xs font-bold text-black/25">
+          {number}
+        </span>
+      </div>
+
+      <h3 className="mt-7 font-display text-3xl text-[#27191b]">
+        {title}
+      </h3>
+
+      <p className="mt-3 text-sm leading-7 text-black/55">
+        {body}
+      </p>
+
+      <div className="mt-6 h-px w-10 bg-primary transition-all duration-300 group-hover:w-20" />
+
+    </div>
+  );
+}
+/* =========================================================
+   PUBLIC INFORMATION PAGES
+   ========================================================= */
+
+function SimplePublicPage({
+  eyebrow,
+  title,
+  intro,
+  children,
+}: {
+  eyebrow: string;
+  title: ReactNode;
+  intro: string;
+  children: ReactNode;
+}) {
+  return (
+    <PublicLayout>
+      <main className="page-enter">
+        <section className="mx-auto max-w-7xl px-5 pb-14 pt-20 lg:px-10">
+          <p className="eyebrow text-[#8f1731]">{eyebrow}</p>
+
+          <h1 className="mt-5 max-w-4xl font-display text-6xl leading-[.9] text-[#641126] md:text-8xl">
+            {title}
+          </h1>
+
+          <p className="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">
+            {intro}
+          </p>
+        </section>
+
+        <section className="border-t border-[#eadde0] bg-[#fffafa]">
+          <div className="prose prose-lg mx-auto max-w-4xl px-5 py-16 prose-headings:font-display prose-headings:font-normal prose-headings:text-[#641126] prose-p:text-muted-foreground prose-li:text-muted-foreground lg:px-10">
+            {children}
+          </div>
+        </section>
+      </main>
+    </PublicLayout>
+  );
+}
+
+function About() {
+  return (
+    <SimplePublicPage
+      eyebrow="About us"
+      title={
+        <>
+          A better beginning
+          <br />
+          <em>starts with context.</em>
+        </>
+      }
+      intro="Pahadi Bwari is a matrimonial platform for adults with Uttarakhand roots, wherever they live in the world."
+    >
+      <h2>People first, profiles second.</h2>
+
+      <p>
+        A profile should help someone understand the person behind
+        the information. That means making room for values, education,
+        work, family context, location, and the details that make an
+        introduction meaningful.
+      </p>
+
+      <h2>From Uttarakhand to anywhere.</h2>
+
+      <p>
+        Your connection to Uttarakhand does not depend on where you
+        currently live. Pahadi Bwari is designed for people around the
+        world who share those roots.
+      </p>
+
+      <h2>Your choices remain yours.</h2>
+
+      <p>
+        Members decide what to share, when to share it, and whether
+        they want to continue an introduction.
+      </p>
+    </SimplePublicPage>
+  );
+}
+
+function HowItWorks() {
+  return (
+    <SimplePublicPage
+      eyebrow="How it works"
+      title={
+        <>
+          Four simple steps.
+          <br />
+          <em>No unnecessary noise.</em>
+        </>
+      }
+      intro="Create your profile, discover relevant people, express interest, and decide what happens next."
+    >
+      <div className="not-prose grid gap-4">
+        {[
+          [
+            '01',
+            'Create your introduction',
+            'Add the details that help someone understand your life, values, education, work, and background.',
+          ],
+          [
+            '02',
+            'Choose your visibility',
+            'Your profile visibility is under your control.',
+          ],
+          [
+            '03',
+            'Discover people',
+            'Use filters to find relevant profiles instead of endlessly scrolling.',
+          ],
+          [
+            '04',
+            'Send interest',
+            'If you want to know someone better, send an interest and let them decide what happens next.',
+          ],
+        ].map(([number, heading, body]) => (
+          <div
+            className="grid gap-5 rounded-2xl border border-[#eadde0] bg-white p-6 md:grid-cols-[70px_1fr]"
+            key={number}
+          >
+            <span className="font-mono-ui text-sm font-bold text-[#8f1731]">
+              {number}
+            </span>
+
+            <div>
+              <h3 className="font-display text-3xl text-[#641126]">
+                {heading}
+              </h3>
+
+              <p className="mt-2 leading-7 text-muted-foreground">
+                {body}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </SimplePublicPage>
+  );
+}
+
+function Safety() {
+  return (
+    <SimplePublicPage
+      eyebrow="Safety guidelines"
+      title={
+        <>
+          Take your time.
+          <br />
+          <em>Protect your privacy.</em>
+        </>
+      }
+      intro="A respectful matrimonial platform depends on everyone using it thoughtfully."
+    >
+      <h2>Keep personal information private.</h2>
+
+      <p>
+        Avoid sharing your address, financial information, passwords,
+        identity documents, or other sensitive information during an
+        early conversation.
+      </p>
+
+      <h2>Meet thoughtfully.</h2>
+
+      <p>
+        When you decide to meet someone, tell a trusted person where
+        you are going and choose an appropriate public setting.
+      </p>
+
+      <h2>Be careful with requests for money.</h2>
+
+      <p>
+        Never send money simply because someone you met online asks
+        you to. Pause and verify information independently.
+      </p>
+
+      <h2>Report concerns.</h2>
+
+      <p>
+        If you encounter suspicious, abusive, misleading, or
+        inappropriate behaviour, use the report functionality
+        available on the platform.
+      </p>
+    </SimplePublicPage>
+  );
+}
+
+function Contact() {
+  return (
+    <SimplePublicPage
+      eyebrow="Contact"
+      title={
+        <>
+          Have a question?
+          <br />
+          <em>We're listening.</em>
+        </>
+      }
+      intro="Questions about your profile, privacy, reports, or how Pahadi Bwari works?"
+    >
+      <div className="not-prose grid gap-4 sm:grid-cols-2">
+        <a
+          href="mailto:namaste@pahadibwari.in"
+          className="hover-lift rounded-2xl border border-[#eadde0] bg-white p-6"
+          data-testid="link-contact-email"
+        >
+          <PhoneCall className="text-[#8f1731]" size={22} />
+
+          <h2 className="mt-5 font-display text-3xl text-[#641126]">
+            Email the team
+          </h2>
+
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            namaste@pahadibwari.in
+          </p>
+        </a>
+
+        <div className="rounded-2xl border border-[#eadde0] bg-white p-6">
+          <ShieldCheck className="text-[#8f1731]" size={22} />
+
+          <h2 className="mt-5 font-display text-3xl text-[#641126]">
+            Safety concern
+          </h2>
+
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Report a profile directly from its page so the moderation
+            team receives the relevant context.
+          </p>
+        </div>
+      </div>
+    </SimplePublicPage>
+  );
+}
+
+function Legal({ type }: { type: 'privacy' | 'terms' }) {
+  return (
+    <SimplePublicPage
+      eyebrow={
+        type === 'privacy'
+          ? 'Privacy policy'
+          : 'Terms & disclaimer'
+      }
+      title={
+        type === 'privacy' ? (
+          <>
+            Your information.
+            <br />
+            <em>Your choice.</em>
+          </>
+        ) : (
+          <>
+            Clear terms for
+            <br />
+            <em>meaningful beginnings.</em>
+          </>
+        )
+      }
+      intro={
+        type === 'privacy'
+          ? 'We collect information needed to operate the matrimonial service and protect the platform.'
+          : 'Pahadi Bwari provides introductions between adults and does not guarantee compatibility, identity, conduct, or outcomes.'
+      }
+    >
+      <h2>In short</h2>
+
+      <p>
+        Use the service honestly, protect your own information, and
+        treat every member with dignity.
+      </p>
+
+      <h2>Information and visibility</h2>
+
+      <p>
+        Profile information is displayed according to your visibility
+        settings. Private contact information is not intended to be
+        displayed on public profile pages.
+      </p>
+
+      <h2>Responsible use</h2>
+
+      <p>
+        Do not impersonate another person, harass members, solicit
+        money, misuse personal information, or create profiles for
+        people without their consent.
+      </p>
+
+      <h2>Questions</h2>
+
+      <p>
+        For policy questions, contact namaste@pahadibwari.in.
+      </p>
+    </SimplePublicPage>
+  );
+}
+
+/* =========================================================
+   AUTHENTICATION
+   ========================================================= */
+
+function SignInPage({ signUp = false }: { signUp?: boolean }) {
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+  return (
+    <div className="grain flex min-h-[100dvh] items-center justify-center bg-background px-4 py-8">
+      {signUp ? (
+        <ClerkSignUp
+          routing="path"
+          path={`${basePath}/sign-up`}
+          signInUrl={`${basePath}/sign-in`}
+        />
+      ) : (
+        <ClerkSignIn
+          routing="path"
+          path={`${basePath}/sign-in`}
+          signUpUrl={`${basePath}/sign-up`}
+        />
+      )}
+    </div>
+  );
+}
+
+/* =========================================================
+   MEMBER AREA
+   ========================================================= */
+function MemberShell({ children }: { children: ReactNode }) {
+  const [, setLocation] = useLocation();
+  const { signOut } = useClerk();
+  const [mobileMenu, setMobileMenu] = useState(false);
+
+  const navigation = [
+    {
+      href: '/dashboard',
+      label: 'Overview',
+      icon: BarChart3,
+    },
+    {
+      href: '/discover',
+      label: 'Discover',
+      icon: Compass,
+    },
+    {
+      href: '/interests',
+      label: 'Interests',
+      icon: Heart,
+    },
+    {
+      href: '/my-profile',
+      label: 'My profile',
+      icon: UserRound,
+    },
+  ];
+
+  const manageNavigation = [
+    {
+      href: '/edit-profile',
+      label: 'Edit profile',
+      icon: Pencil,
+    },
+    {
+      href: '/manage-photos',
+      label: 'Photos',
+      icon: ImagePlus,
+    },
+    {
+      href: '/privacy-settings',
+      label: 'Privacy',
+      icon: LockKeyhole,
+    },
+  ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    setLocation('/');
+  };
+
+  return (
+    <div className="min-h-[100dvh] bg-[#f7f1e8] text-[#321d22]">
+      {/* Desktop sidebar */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[250px] border-r border-[#d8c9bd] bg-[#fbf7f1] lg:flex lg:flex-col">
+        <div className="border-b border-[#d8c9bd] px-7 py-7">
+          <Link
+            href="/dashboard"
+            className="group flex items-center gap-3"
+            data-testid="link-member-logo"
+          >
+            <div className="grid size-11 place-items-center rounded-2xl bg-[#8f1731] text-sm font-bold text-white shadow-sm">
+              PB
+            </div>
+
+            <div>
+              <p className="font-display text-2xl leading-none text-[#641126]">
+                Pahadi Bwari
+              </p>
+
+              <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#8f1731]/60">
+                Member space
+              </p>
+            </div>
+          </Link>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-4 py-7">
+          <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8f1731]/50">
+            Your space
+          </p>
+
+          <nav className="mt-3 space-y-1">
+            {navigation.map(({ href, label, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                className="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-[#5d4a4f] transition hover:bg-[#8f1731]/7 hover:text-[#8f1731]"
+                data-testid={`link-nav-${label
+                  .toLowerCase()
+                  .replace(/\s+/g, '-')}`}
+              >
+                <span className="grid size-8 place-items-center rounded-lg bg-[#8f1731]/5 transition group-hover:bg-[#8f1731]/10">
+                  <Icon size={16} />
+                </span>
+
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          <p className="mt-8 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8f1731]/50">
+            Manage
+          </p>
+
+          <nav className="mt-3 space-y-1">
+            {manageNavigation.map(({ href, label, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                className="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-[#5d4a4f] transition hover:bg-[#8f1731]/7 hover:text-[#8f1731]"
+                data-testid={`link-manage-${label
+                  .toLowerCase()
+                  .replace(/\s+/g, '-')}`}
+              >
+                <span className="grid size-8 place-items-center rounded-lg bg-[#8f1731]/5 transition group-hover:bg-[#8f1731]/10">
+                  <Icon size={16} />
+                </span>
+
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="mt-8 rounded-2xl bg-[#641126] p-4 text-white">
+            <Sparkles size={18} className="text-[#d7b06a]" />
+
+            <p className="mt-3 text-sm font-semibold">
+              Keep your profile fresh
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-white/60">
+              A complete introduction gives people more context.
+            </p>
+
+            <Link
+              href="/edit-profile"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#e4c783]"
+            >
+              Update profile
+              <ArrowRight size={13} />
+            </Link>
+          </div>
+        </div>
+
+        <div className="border-t border-[#d8c9bd] p-4">
+          <Link
+            href="/safety"
+            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-[#5d4a4f] hover:bg-[#8f1731]/7"
+          >
+            <ShieldCheck size={17} />
+            Safety & privacy
+          </Link>
+
+          <button
+            onClick={handleSignOut}
+            className="mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-[#5d4a4f] hover:bg-[#8f1731]/7"
+            data-testid="button-sign-out"
+          >
+            <LogOut size={17} />
+            Sign out
+          </button>
+        </div>
+      </aside>
+
+      {/* Mobile drawer */}
+      {mobileMenu && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <button
+            className="absolute inset-0 bg-[#321d22]/40 backdrop-blur-sm"
+            onClick={() => setMobileMenu(false)}
+            aria-label="Close menu"
+          />
+
+          <aside className="relative flex h-full w-[285px] flex-col bg-[#fbf7f1] shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#d8c9bd] px-5 py-5">
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileMenu(false)}
+                className="flex items-center gap-3"
+              >
+                <div className="grid size-10 place-items-center rounded-xl bg-[#8f1731] text-xs font-bold text-white">
+                  PB
+                </div>
+
+                <div>
+                  <p className="font-display text-xl text-[#641126]">
+                    Pahadi Bwari
+                  </p>
+
+                  <p className="text-[9px] uppercase tracking-[0.16em] text-[#8f1731]/60">
+                    Member space
+                  </p>
+                </div>
+              </Link>
+
+              <button
+                onClick={() => setMobileMenu(false)}
+                className="grid size-9 place-items-center rounded-xl border border-[#d8c9bd]"
+                aria-label="Close menu"
+              >
+                <X size={17} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-6">
+              <p className="px-3 text-[10px] uppercase tracking-[0.18em] text-[#8f1731]/50">
+                Your space
+              </p>
+
+              <nav className="mt-3 space-y-1">
+                {navigation.map(({ href, label, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setMobileMenu(false)}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-[#5d4a4f] hover:bg-[#8f1731]/7"
+                  >
+                    <Icon size={17} />
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+
+              <p className="mt-7 px-3 text-[10px] uppercase tracking-[0.18em] text-[#8f1731]/50">
+                Manage
+              </p>
+
+              <nav className="mt-3 space-y-1">
+                {manageNavigation.map(({ href, label, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setMobileMenu(false)}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-[#5d4a4f] hover:bg-[#8f1731]/7"
+                  >
+                    <Icon size={17} />
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            <div className="border-t border-[#d8c9bd] p-4">
+              <button
+                onClick={handleSignOut}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm text-[#5d4a4f]"
+              >
+                <LogOut size={17} />
+                Sign out
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* Main area */}
+      <div className="min-h-[100dvh] lg:pl-[250px]">
+        <header className="sticky top-0 z-30 flex h-[76px] items-center justify-between border-b border-[#d8c9bd]/80 bg-[#f7f1e8]/92 px-5 backdrop-blur-xl lg:px-10">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileMenu(true)}
+              className="grid size-10 place-items-center rounded-xl border border-[#d8c9bd] bg-[#fbf7f1] lg:hidden"
+              aria-label="Open menu"
+            >
+              <Menu size={19} />
+            </button>
+
+            <div className="hidden sm:block">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8f1731]/55">
+                Member space
+              </p>
+
+              <p className="mt-1 text-sm font-medium text-[#5d4a4f]">
+                A calm place to look around.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <Link
+              href="/discover"
+              className="hidden min-h-10 items-center gap-2 rounded-xl border border-[#d8c9bd] bg-[#fbf7f1] px-4 text-sm font-semibold text-[#5d4a4f] transition hover:border-[#8f1731]/30 hover:text-[#8f1731] sm:inline-flex"
+              data-testid="link-header-discover"
+            >
+              <Search size={15} />
+              Find profiles
+            </Link>
+
+            <button
+              className="grid size-10 place-items-center rounded-xl border border-[#d8c9bd] bg-[#fbf7f1] text-[#6d595e]"
+              aria-label="Notifications"
+              title="Notifications"
+            >
+              <Bell size={17} />
+            </button>
+
+            <Link
+              href="/my-profile"
+              className="grid size-10 place-items-center rounded-full bg-[#8f1731] text-xs font-bold text-white shadow-sm"
+              data-testid="link-member-avatar"
+            >
+              PB
+            </Link>
+          </div>
+        </header>
+
+        <main className="page-enter mx-auto max-w-[1380px] px-5 py-7 lg:px-10 lg:py-10">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function Gate({ children }: { children: ReactNode }) {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return <div className="min-h-[100dvh] bg-[#f7f1e8]" />;
+  }
+
+  if (!isSignedIn) {
+    return <Redirect to="/sign-in" />;
+  }
+
+  return <MemberShell>{children}</MemberShell>;
+}
+function AuthOnly({ children }: { children: ReactNode }) {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return <div className="min-h-[100dvh] bg-background" />;
+  }
+
+  if (!isSignedIn) {
+    return <Redirect to="/sign-in" />;
+  }
+
+  return <>{children}</>;
+}
+function OnboardingGate({ children }: { children: ReactNode }) {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return <div className="min-h-[100dvh] bg-[#f7f1e8]" />;
+  }
+
+  if (!isSignedIn) {
+    return <Redirect to="/sign-in" />;
+  }
+
+  return <>{children}</>;
+}
+
+function PageHeading({
+  eyebrow,
+  title,
+  body,
+  action,
+}: {
+  eyebrow: string;
+  title: string;
+  body?: string;
+  action?: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col justify-between gap-5 border-b border-[#d8c9bd] pb-7 md:flex-row md:items-end">
+      <div>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8f1731]">
+          {eyebrow}
+        </p>
+
+        <h1 className="mt-3 max-w-3xl font-display text-5xl leading-[0.95] text-[#641126] md:text-6xl">
+          {title}
+        </h1>
+
+        {body && (
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-[#6d595e]">
+            {body}
+          </p>
+        )}
+      </div>
+
+      {action}
+    </div>
+  );
+}
+
+function EmptyState({
+  icon,
+  title,
+  body,
+  action,
+}: {
+  icon: ReactNode;
+  title: string;
+  body: string;
+  action?: ReactNode;
+}) {
+  return (
+    <div className="grid min-h-64 place-items-center rounded-3xl border border-dashed border-[#d8c9bd] bg-[#fbf7f1]/70 p-8 text-center">
+      <div>
+        <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-[#8f1731]/8 text-[#8f1731]">
+          {icon}
+        </div>
+
+        <h3 className="mt-4 font-display text-3xl text-[#641126]">
+          {title}
+        </h3>
+
+        <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#75656a]">
+          {body}
+        </p>
+
+        {action && <div className="mt-5">{action}</div>}
+      </div>
+    </div>
+  );
+}
+
+function ProfileAvatar({
+  profile,
+  large = false,
+}: {
+  profile: PublicProfile;
+  large?: boolean;
+}) {
+  const [imageError, setImageError] = useState(false);
+
+  const primaryPhoto = profile.photos?.find(
+    (photo) => photo.isPrimary === true,
+  );
+
+  const imageUrl = primaryPhoto?.url ?? profile.photoUrl;
+
+  const sizeClass = large ? 'size-28' : 'size-16';
+  const textClass = large ? 'text-4xl' : 'text-xl';
+
+  if (!imageUrl || imageError) {
+    return (
+      <div
+        className={`${sizeClass} ${textClass} grid shrink-0 place-items-center rounded-2xl bg-[#8f1731] font-display text-white`}
+      >
+        {initials(profile.fullName)}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${sizeClass} shrink-0 overflow-hidden rounded-2xl`}>
+      <img
+        src={imageUrl}
+        alt={`${profile.fullName} profile`}
+        className={`${sizeClass} object-cover`}
+        loading="lazy"
+        onError={() => setImageError(true)}
+      />
+    </div>
+  );
+}
+
+function ProfileCard({ profile }: { profile: PublicProfile }) {
+  return (
+    <Link
+      href={`/profiles/${profile.id}`}
+      className="group block overflow-hidden rounded-3xl border border-[#d8c9bd] bg-[#fbf7f1] transition-all duration-300 hover:-translate-y-1 hover:border-[#8f1731]/35 hover:shadow-xl"
+      data-testid={`card-profile-${profile.id}`}
+    >
+      <div className="relative aspect-[4/4.7] overflow-hidden bg-[#eadfd4]">
+        {profile.photoUrl ? (
+          <img
+            src={profile.photoUrl}
+            alt={`${profile.fullName} profile`}
+            className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+            loading="lazy"
+          />

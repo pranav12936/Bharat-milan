@@ -12,14 +12,19 @@ export interface ProfileInput {
   fullName: string;
   dateOfBirth: Date;
   gender: string;
+  phone?: string;
+  address?: string;
   /**
-     * @minimum 100
-     * @maximum 240
+     * @minimum 50
+     * @maximum 250
      */
   height?: number;
   maritalStatus?: string;
   religion?: string;
   community?: string;
+  caste?: string;
+  subCaste?: string;
+  ethnicBackground?: string;
   motherTongue?: string;
   state?: string;
   district?: string;
@@ -28,19 +33,43 @@ export interface ProfileInput {
   /** @maxLength 1200 */
   about?: string;
   education?: string;
+  qualifications?: string;
   college?: string;
   profession?: string;
   jobTitle?: string;
   company?: string;
   workLocation?: string;
+  employmentDetails?: string;
   incomeRange?: string;
-  /** @maxLength 1200 */
-  familyInformation?: string;
+  visaWorkStatus?: string;
+  bodyType?: string;
+  appearance?: string;
   /** @maxLength 1200 */
   lifestyleInformation?: string;
+  smoking?: string;
+  drinking?: string;
+  foodPreferences?: string;
+  /** @maxLength 1200 */
+  healthInformation?: string;
+  fatherOccupation?: string;
+  fatherStatus?: string;
+  motherOccupation?: string;
+  motherStatus?: string;
+  /** @minimum 0 */
+  siblingsCount?: number;
+  /** @minimum 0 */
+  brothersCount?: number;
+  /** @minimum 0 */
+  sistersCount?: number;
+  /** @minimum 0 */
+  marriedSiblingsCount?: number;
+  /** @minimum 0 */
+  unmarriedSiblingsCount?: number;
+  familyType?: string;
+  /** @maxLength 1200 */
+  familyInformation?: string;
   hobbies?: string;
   languages?: string;
-  foodPreferences?: string;
   culturalInterests?: string;
   familyValues?: string;
   visibility?: ProfileInputVisibility;
@@ -48,15 +77,18 @@ export interface ProfileInput {
   preferredAgeMin?: number;
   /** @minimum 18 */
   preferredAgeMax?: number;
-  /** @minimum 100 */
+  /** @minimum 50 */
   preferredHeightMin?: number;
-  /** @minimum 100 */
+  /** @minimum 50 */
   preferredHeightMax?: number;
   preferredLocation?: string;
   preferredDistrict?: string;
+  preferredReligion?: string;
+  preferredCaste?: string;
   preferredEducation?: string;
   preferredProfession?: string;
   preferredCommunity?: string;
+  preferredIncomeRange?: string;
   preferredMaritalStatus?: string;
   preferredFamilyValues?: string;
   /** @maxLength 1200 */

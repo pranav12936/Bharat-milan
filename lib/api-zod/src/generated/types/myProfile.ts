@@ -17,5 +17,57 @@ export type MyProfile = PublicProfile & {
      * @maximum 100
      */
   completion: number;
+  dateOfBirth?: Date;
+  phone?: string;
+  address?: string;
+  religion?: string;
+  community?: string;
+  caste?: string;
+  subCaste?: string;
+  ethnicBackground?: string;
+  motherTongue?: string;
+  state?: string;
+  currentCity?: string;
+  district?: string;
+  nativePlace?: string;
+  qualifications?: string;
+  college?: string;
+  profession?: string;
+  jobTitle?: string;
+  company?: string;
+  workLocation?: string;
+  employmentDetails?: string;
+  incomeRange?: string;
+  visaWorkStatus?: string;
+  bodyType?: string;
+  appearance?: string;
+  /** @maxLength 1200 */
+  lifestyleInformation?: string;
+  smoking?: string;
+  drinking?: string;
+  foodPreferences?: string;
+  /** @maxLength 1200 */
+  healthInformation?: string;
+  fatherOccupation?: string;
+  fatherStatus?: string;
+  motherOccupation?: string;
+  motherStatus?: string;
+  /** @minimum 0 */
+  siblingsCount?: number;
+  /** @minimum 0 */
+  brothersCount?: number;
+  /** @minimum 0 */
+  sistersCount?: number;
+  /** @minimum 0 */
+  marriedSiblingsCount?: number;
+  /** @minimum 0 */
+  unmarriedSiblingsCount?: number;
+  familyType?: string;
+  /** @maxLength 1200 */
+  familyInformation?: string;
+  hobbies?: string;
+  languages?: string;
+  culturalInterests?: string;
+  familyValues?: string;
   preferences: PartnerPreferences;
 };
